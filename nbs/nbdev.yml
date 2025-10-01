@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "BCG-DataScience-The-Forage"
+  site-url: "https://Ramon-PR.github.io/BCG-DataScience-The-Forage"
+  description: "Job simulation from BCG X Data Scientist"
+  repo-branch: main
+  repo-url: "https://github.com/Ramon-PR/BCG-DataScience-The-Forage"
