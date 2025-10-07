@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploratory Data Analysis – BCG-DataScience-The-Forage</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-000f0825b9c55ed21d14970d810c14a9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Exploratory Data Analysis – BCG-DataScience-The-Forage">
+<meta property="og:description" content="Job simulation from BCG X Data Scientist">
+<meta property="og:image" content="https://Ramon-PR.github.io/BCG-DataScience-The-Forage/Task 2 - Model Answer - EDA (2)_files/figure-html/cell-13-output-1.png">
+<meta property="og:site_name" content="BCG-DataScience-The-Forage">
+<meta property="og:image:height" content="453">
+<meta property="og:image:width" content="470">
+<meta name="twitter:title" content="Exploratory Data Analysis – BCG-DataScience-The-Forage">
+<meta name="twitter:description" content="Job simulation from BCG X Data Scientist">
+<meta name="twitter:image" content="https://Ramon-PR.github.io/BCG-DataScience-The-Forage/Task 2 - Model Answer - EDA (2)_files/figure-html/cell-13-output-1.png">
+<meta name="twitter:image-height" content="453">
+<meta name="twitter:image-width" content="470">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">BCG-DataScience-The-Forage</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./task 2 - model answer - eda (2).html">Exploratory Data Analysis</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="./index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BCG-DataScience-The-Forage</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task 2 - model answer - eda (2).html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Exploratory Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task 2 - eda_starter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploratory Data Analysis Starter</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task 3 - model answer - feature engineering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feature Engineering and Modelling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task 3 - feature_engineering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feature Engineering</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task2_data_exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploratory Data Analysis Starter</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task3_ferature_engineering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feature Engineering</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task4_modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feature Engineering and Modelling</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#loading-data-with-pandas" id="toc-loading-data-with-pandas" class="nav-link active" data-scroll-target="#loading-data-with-pandas">2. Loading data with Pandas</a></li>
+  <li><a href="#descriptive-statistics-of-data" id="toc-descriptive-statistics-of-data" class="nav-link" data-scroll-target="#descriptive-statistics-of-data">3. Descriptive statistics of data</a>
+  <ul class="collapse">
+  <li><a href="#data-types" id="toc-data-types" class="nav-link" data-scroll-target="#data-types">Data types</a></li>
+  <li><a href="#statistics" id="toc-statistics" class="nav-link" data-scroll-target="#statistics">Statistics</a></li>
+  </ul></li>
+  <li><a href="#data-visualization" id="toc-data-visualization" class="nav-link" data-scroll-target="#data-visualization">3. Data visualization</a>
+  <ul class="collapse">
+  <li><a href="#churn" id="toc-churn" class="nav-link" data-scroll-target="#churn">Churn</a></li>
+  <li><a href="#sales-channel" id="toc-sales-channel" class="nav-link" data-scroll-target="#sales-channel">Sales channel</a></li>
+  <li><a href="#consumption" id="toc-consumption" class="nav-link" data-scroll-target="#consumption">Consumption</a></li>
+  <li><a href="#forecast" id="toc-forecast" class="nav-link" data-scroll-target="#forecast">Forecast</a></li>
+  <li><a href="#contract-type" id="toc-contract-type" class="nav-link" data-scroll-target="#contract-type">Contract type</a></li>
+  <li><a href="#margins" id="toc-margins" class="nav-link" data-scroll-target="#margins">Margins</a></li>
+  <li><a href="#subscribed-power" id="toc-subscribed-power" class="nav-link" data-scroll-target="#subscribed-power">Subscribed power</a></li>
+  <li><a href="#other-columns" id="toc-other-columns" class="nav-link" data-scroll-target="#other-columns">Other columns</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/Ramon-PR/BCG-DataScience-The-Forage/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="task 2 - model answer - eda (2).html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exploratory Data Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div id="2dc7e2f5" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>, category<span class="op">=</span><span class="pp">FutureWarning</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="21fa22a3-62fc-4ee9-ad3b-5e3fbc059bdf" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Shows plots in jupyter notebook</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Set plot style</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(color_codes<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+<section id="loading-data-with-pandas" class="level2">
+<h2 class="anchored" data-anchor-id="loading-data-with-pandas">2. Loading data with Pandas</h2>
+<p>We need to load <code>client_data.csv</code> and <code>price_data.csv</code> into individual dataframes so that we can work with them in Python</p>
+<div id="82e6a4ae-2b8a-4152-b04f-0c998466fd50" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>client_df <span class="op">=</span> pd.read_csv(<span class="st">'../resources/client_data.csv'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>price_df <span class="op">=</span> pd.read_csv(<span class="st">'../resources/price_data.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let’s look at the first 3 rows of both dataframes to see what the data looks like</p>
+<div id="dcf0d488-d3df-4819-a52b-e335c0674e43" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>client_df.head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">channel_sales</th>
+<th data-quarto-table-cell-role="th">cons_12m</th>
+<th data-quarto-table-cell-role="th">cons_gas_12m</th>
+<th data-quarto-table-cell-role="th">cons_last_month</th>
+<th data-quarto-table-cell-role="th">date_activ</th>
+<th data-quarto-table-cell-role="th">date_end</th>
+<th data-quarto-table-cell-role="th">date_modif_prod</th>
+<th data-quarto-table-cell-role="th">date_renewal</th>
+<th data-quarto-table-cell-role="th">forecast_cons_12m</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">has_gas</th>
+<th data-quarto-table-cell-role="th">imp_cons</th>
+<th data-quarto-table-cell-role="th">margin_gross_pow_ele</th>
+<th data-quarto-table-cell-role="th">margin_net_pow_ele</th>
+<th data-quarto-table-cell-role="th">nb_prod_act</th>
+<th data-quarto-table-cell-role="th">net_margin</th>
+<th data-quarto-table-cell-role="th">num_years_antig</th>
+<th data-quarto-table-cell-role="th">origin_up</th>
+<th data-quarto-table-cell-role="th">pow_max</th>
+<th data-quarto-table-cell-role="th">churn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>24011ae4ebbe3035111d65fa7c15bc57</td>
+<td>foosdfpfkusacimwkcsosbicdxkicaua</td>
+<td>0</td>
+<td>54946</td>
+<td>0</td>
+<td>2013-06-15</td>
+<td>2016-06-15</td>
+<td>2015-11-01</td>
+<td>2015-06-23</td>
+<td>0.00</td>
+<td>...</td>
+<td>t</td>
+<td>0.0</td>
+<td>25.44</td>
+<td>25.44</td>
+<td>2</td>
+<td>678.99</td>
+<td>3</td>
+<td>lxidpiddsbxsbosboudacockeimpuepw</td>
+<td>43.648</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>d29c2c54acc38ff3c0614d0a653813dd</td>
+<td>MISSING</td>
+<td>4660</td>
+<td>0</td>
+<td>0</td>
+<td>2009-08-21</td>
+<td>2016-08-30</td>
+<td>2009-08-21</td>
+<td>2015-08-31</td>
+<td>189.95</td>
+<td>...</td>
+<td>f</td>
+<td>0.0</td>
+<td>16.38</td>
+<td>16.38</td>
+<td>1</td>
+<td>18.89</td>
+<td>6</td>
+<td>kamkkxfxxuwbdslkwifmmcsiusiuosws</td>
+<td>13.800</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>764c75f661154dac3a6c254cd082ea7d</td>
+<td>foosdfpfkusacimwkcsosbicdxkicaua</td>
+<td>544</td>
+<td>0</td>
+<td>0</td>
+<td>2010-04-16</td>
+<td>2016-04-16</td>
+<td>2010-04-16</td>
+<td>2015-04-17</td>
+<td>47.96</td>
+<td>...</td>
+<td>f</td>
+<td>0.0</td>
+<td>28.60</td>
+<td>28.60</td>
+<td>1</td>
+<td>6.60</td>
+<td>6</td>
+<td>kamkkxfxxuwbdslkwifmmcsiusiuosws</td>
+<td>13.856</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>3 rows × 26 columns</p>
+</div>
+</div>
+</div>
+<p>With the client data, we have a mix of numeric and categorical data, which we will need to transform before modelling later</p>
+<div id="2654a02d-8cf3-4a18-903e-b4f7f95d8e9e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>price_df.head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">price_date</th>
+<th data-quarto-table-cell-role="th">price_off_peak_var</th>
+<th data-quarto-table-cell-role="th">price_peak_var</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_var</th>
+<th data-quarto-table-cell-role="th">price_off_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>038af19179925da21a25619c5a24b745</td>
+<td>2015-01-01</td>
+<td>0.151367</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>44.266931</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>038af19179925da21a25619c5a24b745</td>
+<td>2015-02-01</td>
+<td>0.151367</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>44.266931</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>038af19179925da21a25619c5a24b745</td>
+<td>2015-03-01</td>
+<td>0.151367</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>44.266931</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>With the price data, it is purely numeric data but we can see a lot of zeros</p>
+<hr>
+</section>
+<section id="descriptive-statistics-of-data" class="level2">
+<h2 class="anchored" data-anchor-id="descriptive-statistics-of-data">3. Descriptive statistics of data</h2>
+<section id="data-types" class="level3">
+<h3 class="anchored" data-anchor-id="data-types">Data types</h3>
+<p>It is useful to first understand the data that you’re dealing with along with the data types of each column. The data types may dictate how you transform and engineer features.</p>
+<div id="2dc75b07-c286-4852-bc33-e501782e67d9" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>client_df.info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 14606 entries, 0 to 14605
+Data columns (total 26 columns):
+ #   Column                          Non-Null Count  Dtype  
+---  ------                          --------------  -----  
+ 0   id                              14606 non-null  object 
+ 1   channel_sales                   14606 non-null  object 
+ 2   cons_12m                        14606 non-null  int64  
+ 3   cons_gas_12m                    14606 non-null  int64  
+ 4   cons_last_month                 14606 non-null  int64  
+ 5   date_activ                      14606 non-null  object 
+ 6   date_end                        14606 non-null  object 
+ 7   date_modif_prod                 14606 non-null  object 
+ 8   date_renewal                    14606 non-null  object 
+ 9   forecast_cons_12m               14606 non-null  float64
+ 10  forecast_cons_year              14606 non-null  int64  
+ 11  forecast_discount_energy        14606 non-null  float64
+ 12  forecast_meter_rent_12m         14606 non-null  float64
+ 13  forecast_price_energy_off_peak  14606 non-null  float64
+ 14  forecast_price_energy_peak      14606 non-null  float64
+ 15  forecast_price_pow_off_peak     14606 non-null  float64
+ 16  has_gas                         14606 non-null  object 
+ 17  imp_cons                        14606 non-null  float64
+ 18  margin_gross_pow_ele            14606 non-null  float64
+ 19  margin_net_pow_ele              14606 non-null  float64
+ 20  nb_prod_act                     14606 non-null  int64  
+ 21  net_margin                      14606 non-null  float64
+ 22  num_years_antig                 14606 non-null  int64  
+ 23  origin_up                       14606 non-null  object 
+ 24  pow_max                         14606 non-null  float64
+ 25  churn                           14606 non-null  int64  
+dtypes: float64(11), int64(7), object(8)
+memory usage: 2.9+ MB</code></pre>
+</div>
+</div>
+<div id="b67f2628-351a-48ee-b8ba-88c54042af88" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>price_df.info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 193002 entries, 0 to 193001
+Data columns (total 8 columns):
+ #   Column              Non-Null Count   Dtype  
+---  ------              --------------   -----  
+ 0   id                  193002 non-null  object 
+ 1   price_date          193002 non-null  object 
+ 2   price_off_peak_var  193002 non-null  float64
+ 3   price_peak_var      193002 non-null  float64
+ 4   price_mid_peak_var  193002 non-null  float64
+ 5   price_off_peak_fix  193002 non-null  float64
+ 6   price_peak_fix      193002 non-null  float64
+ 7   price_mid_peak_fix  193002 non-null  float64
+dtypes: float64(6), object(2)
+memory usage: 11.8+ MB</code></pre>
+</div>
+</div>
+<p>You can see that all of the <code>datetime</code> related columns are not currently in datetime format. We will need to convert these later.</p>
+</section>
+<section id="statistics" class="level3">
+<h3 class="anchored" data-anchor-id="statistics">Statistics</h3>
+<p>Now let’s look at some statistics about the datasets</p>
+<div id="60f3010c-ecaf-4b8a-bb87-93bb54cc0c7e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>client_df.describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">cons_12m</th>
+<th data-quarto-table-cell-role="th">cons_gas_12m</th>
+<th data-quarto-table-cell-role="th">cons_last_month</th>
+<th data-quarto-table-cell-role="th">forecast_cons_12m</th>
+<th data-quarto-table-cell-role="th">forecast_cons_year</th>
+<th data-quarto-table-cell-role="th">forecast_discount_energy</th>
+<th data-quarto-table-cell-role="th">forecast_meter_rent_12m</th>
+<th data-quarto-table-cell-role="th">forecast_price_energy_off_peak</th>
+<th data-quarto-table-cell-role="th">forecast_price_energy_peak</th>
+<th data-quarto-table-cell-role="th">forecast_price_pow_off_peak</th>
+<th data-quarto-table-cell-role="th">imp_cons</th>
+<th data-quarto-table-cell-role="th">margin_gross_pow_ele</th>
+<th data-quarto-table-cell-role="th">margin_net_pow_ele</th>
+<th data-quarto-table-cell-role="th">nb_prod_act</th>
+<th data-quarto-table-cell-role="th">net_margin</th>
+<th data-quarto-table-cell-role="th">num_years_antig</th>
+<th data-quarto-table-cell-role="th">pow_max</th>
+<th data-quarto-table-cell-role="th">churn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">count</th>
+<td>1.460600e+04</td>
+<td>1.460600e+04</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+<td>14606.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">mean</th>
+<td>1.592203e+05</td>
+<td>2.809238e+04</td>
+<td>16090.269752</td>
+<td>1868.614880</td>
+<td>1399.762906</td>
+<td>0.966726</td>
+<td>63.086871</td>
+<td>0.137283</td>
+<td>0.050491</td>
+<td>43.130056</td>
+<td>152.786896</td>
+<td>24.565121</td>
+<td>24.562517</td>
+<td>1.292346</td>
+<td>189.264522</td>
+<td>4.997809</td>
+<td>18.135136</td>
+<td>0.097152</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">std</th>
+<td>5.734653e+05</td>
+<td>1.629731e+05</td>
+<td>64364.196422</td>
+<td>2387.571531</td>
+<td>3247.786255</td>
+<td>5.108289</td>
+<td>66.165783</td>
+<td>0.024623</td>
+<td>0.049037</td>
+<td>4.485988</td>
+<td>341.369366</td>
+<td>20.231172</td>
+<td>20.230280</td>
+<td>0.709774</td>
+<td>311.798130</td>
+<td>1.611749</td>
+<td>13.534743</td>
+<td>0.296175</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">min</th>
+<td>0.000000e+00</td>
+<td>0.000000e+00</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>1.000000</td>
+<td>0.000000</td>
+<td>1.000000</td>
+<td>3.300000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">25%</th>
+<td>5.674750e+03</td>
+<td>0.000000e+00</td>
+<td>0.000000</td>
+<td>494.995000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>16.180000</td>
+<td>0.116340</td>
+<td>0.000000</td>
+<td>40.606701</td>
+<td>0.000000</td>
+<td>14.280000</td>
+<td>14.280000</td>
+<td>1.000000</td>
+<td>50.712500</td>
+<td>4.000000</td>
+<td>12.500000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">50%</th>
+<td>1.411550e+04</td>
+<td>0.000000e+00</td>
+<td>792.500000</td>
+<td>1112.875000</td>
+<td>314.000000</td>
+<td>0.000000</td>
+<td>18.795000</td>
+<td>0.143166</td>
+<td>0.084138</td>
+<td>44.311378</td>
+<td>37.395000</td>
+<td>21.640000</td>
+<td>21.640000</td>
+<td>1.000000</td>
+<td>112.530000</td>
+<td>5.000000</td>
+<td>13.856000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">75%</th>
+<td>4.076375e+04</td>
+<td>0.000000e+00</td>
+<td>3383.000000</td>
+<td>2401.790000</td>
+<td>1745.750000</td>
+<td>0.000000</td>
+<td>131.030000</td>
+<td>0.146348</td>
+<td>0.098837</td>
+<td>44.311378</td>
+<td>193.980000</td>
+<td>29.880000</td>
+<td>29.880000</td>
+<td>1.000000</td>
+<td>243.097500</td>
+<td>6.000000</td>
+<td>19.172500</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">max</th>
+<td>6.207104e+06</td>
+<td>4.154590e+06</td>
+<td>771203.000000</td>
+<td>82902.830000</td>
+<td>175375.000000</td>
+<td>30.000000</td>
+<td>599.310000</td>
+<td>0.273963</td>
+<td>0.195975</td>
+<td>59.266378</td>
+<td>15042.790000</td>
+<td>374.640000</td>
+<td>374.640000</td>
+<td>32.000000</td>
+<td>24570.650000</td>
+<td>13.000000</td>
+<td>320.000000</td>
+<td>1.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The describe method gives us a lot of information about the client data. The key point to take away from this is that we have highly skewed data, as exhibited by the percentile values.</p>
+<div id="f8b442e6-e186-42f9-b3c5-c5c15cd8c82a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>price_df.describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">price_off_peak_var</th>
+<th data-quarto-table-cell-role="th">price_peak_var</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_var</th>
+<th data-quarto-table-cell-role="th">price_off_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">count</th>
+<td>193002.000000</td>
+<td>193002.000000</td>
+<td>193002.000000</td>
+<td>193002.000000</td>
+<td>193002.000000</td>
+<td>193002.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">mean</th>
+<td>0.141027</td>
+<td>0.054630</td>
+<td>0.030496</td>
+<td>43.334477</td>
+<td>10.622875</td>
+<td>6.409984</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">std</th>
+<td>0.025032</td>
+<td>0.049924</td>
+<td>0.036298</td>
+<td>5.410297</td>
+<td>12.841895</td>
+<td>7.773592</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">min</th>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">25%</th>
+<td>0.125976</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>40.728885</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">50%</th>
+<td>0.146033</td>
+<td>0.085483</td>
+<td>0.000000</td>
+<td>44.266930</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">75%</th>
+<td>0.151635</td>
+<td>0.101673</td>
+<td>0.072558</td>
+<td>44.444710</td>
+<td>24.339581</td>
+<td>16.226389</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">max</th>
+<td>0.280700</td>
+<td>0.229788</td>
+<td>0.114102</td>
+<td>59.444710</td>
+<td>36.490692</td>
+<td>17.458221</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Overall the price data looks good.</p>
+<hr>
+</section>
+</section>
+<section id="data-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualization">3. Data visualization</h2>
+<p>Now let’s dive a bit deeper into the dataframes</p>
+<div id="f350ea0a-dc45-43f5-a6b7-e5e816964419" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_stacked_bars(dataframe, title_, size_<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">10</span>), rot_<span class="op">=</span><span class="dv">0</span>, legend_<span class="op">=</span><span class="st">"upper right"</span>):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Plot stacked bars with annotations</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> dataframe.plot(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        kind<span class="op">=</span><span class="st">"bar"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        stacked<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        figsize<span class="op">=</span>size_,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        rot<span class="op">=</span>rot_,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span>title_</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Annotate bars</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    annotate_stacked_bars(ax, textsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rename legend</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    plt.legend([<span class="st">"Retention"</span>, <span class="st">"Churn"</span>], loc<span class="op">=</span>legend_)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Labels</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"Company base (%)"</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> annotate_stacked_bars(ax, pad<span class="op">=</span><span class="fl">0.99</span>, colour<span class="op">=</span><span class="st">"white"</span>, textsize<span class="op">=</span><span class="dv">13</span>):</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co">    Add value annotations to the bars</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Iterate over the plotted rectanges/bars</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> p <span class="kw">in</span> ax.patches:</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate annotation</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">str</span>(<span class="bu">round</span>(p.get_height(),<span class="dv">1</span>))</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If value is 0 do not annotate</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> value <span class="op">==</span> <span class="st">'0.0'</span>:</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>        ax.annotate(</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>            value,</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>            ((p.get_x()<span class="op">+</span> p.get_width()<span class="op">/</span><span class="dv">2</span>)<span class="op">*</span>pad<span class="op">-</span><span class="fl">0.05</span>, (p.get_y()<span class="op">+</span>p.get_height()<span class="op">/</span><span class="dv">2</span>)<span class="op">*</span>pad),</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>            color<span class="op">=</span>colour,</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>            size<span class="op">=</span>textsize</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="churn" class="level3">
+<h3 class="anchored" data-anchor-id="churn">Churn</h3>
+<div id="3ea468a3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>churn <span class="op">=</span> client_df[[<span class="st">'id'</span>, <span class="st">'churn'</span>]]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>churn.columns <span class="op">=</span> [<span class="st">'Companies'</span>, <span class="st">'churn'</span>]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>churn_total <span class="op">=</span> churn.groupby(churn[<span class="st">'churn'</span>]).count()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>churn_percentage <span class="op">=</span> churn_total <span class="op">/</span> churn_total.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="f428cb9c" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plot_stacked_bars(churn_percentage.transpose(), <span class="st">"Churning status"</span>, (<span class="dv">5</span>, <span class="dv">5</span>), legend_<span class="op">=</span><span class="st">"lower right"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>About 10% of the total customers have churned. (This sounds about right)</p>
+</section>
+<section id="sales-channel" class="level3">
+<h3 class="anchored" data-anchor-id="sales-channel">Sales channel</h3>
+<div id="4fd27235" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># numpy array</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>df_channel_ids <span class="op">=</span> client_df[<span class="st">"channel_sales"</span>].unique()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># convert numpy array to dataframe</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>df_channel_ids <span class="op">=</span> pd.DataFrame({<span class="st">'channel_sales'</span>: df_channel_ids})</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Associate a simple list of names</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>df_channel_ids[<span class="st">"ch_id"</span>] <span class="op">=</span> [<span class="ss">f"ch_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(df_channel_ids))]</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>display(df_channel_ids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">channel_sales</th>
+<th data-quarto-table-cell-role="th">ch_id</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>foosdfpfkusacimwkcsosbicdxkicaua</td>
+<td>ch_0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>MISSING</td>
+<td>ch_1</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>lmkebamcaaclubfxadlmueccxoimlema</td>
+<td>ch_2</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>usilxuppasemubllopkaafesmlibmsdf</td>
+<td>ch_3</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>ewpakwlliwisiwduibdlfmalxowmwpci</td>
+<td>ch_4</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>epumfxlbckeskwekxbiuasklxalciiuu</td>
+<td>ch_5</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>sddiedcslfslkckwlfkdpoeeailfpeds</td>
+<td>ch_6</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>fixdbufsefwooaasfcxdxadsiekoceaa</td>
+<td>ch_7</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="f9539908" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>channel <span class="op">=</span> client_df[[<span class="st">'id'</span>, <span class="st">'channel_sales'</span>, <span class="st">'churn'</span>]]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>channel <span class="op">=</span> channel.copy()</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>channel[<span class="st">'channel_sales'</span>] <span class="op">=</span> channel[<span class="st">'channel_sales'</span>].<span class="bu">map</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    df_channel_ids.set_index(<span class="st">'channel_sales'</span>)[<span class="st">'ch_id'</span>]</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>channel</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">channel_sales</th>
+<th data-quarto-table-cell-role="th">churn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>24011ae4ebbe3035111d65fa7c15bc57</td>
+<td>ch_0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>d29c2c54acc38ff3c0614d0a653813dd</td>
+<td>ch_1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>764c75f661154dac3a6c254cd082ea7d</td>
+<td>ch_0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>bba03439a292a1e166f80264c16191cb</td>
+<td>ch_2</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>149d57cf92fc41cf94415803a877cb4b</td>
+<td>ch_1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">14601</th>
+<td>18463073fb097fc0ac5d3e040f356987</td>
+<td>ch_0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">14602</th>
+<td>d0a6f71671571ed83b2645d23af6de00</td>
+<td>ch_0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">14603</th>
+<td>10e6828ddd62cbcf687cb74928c4c2d2</td>
+<td>ch_0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">14604</th>
+<td>1cf20fd6206d7678d5bcafd28c53b4db</td>
+<td>ch_0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">14605</th>
+<td>563dde550fd624d7352f3de77c0cdfcd</td>
+<td>ch_1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>14606 rows × 3 columns</p>
+</div>
+</div>
+</div>
+<div id="d1429604" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>channel <span class="op">=</span> channel.groupby([channel[<span class="st">'channel_sales'</span>], channel[<span class="st">'churn'</span>]])[<span class="st">'id'</span>].count().unstack(level<span class="op">=</span><span class="dv">1</span>).fillna(<span class="dv">0</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>channel_churn <span class="op">=</span> (channel.div(channel.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span>).sort_values(by<span class="op">=</span>[<span class="dv">1</span>], ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>channel_churn</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">churn</th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">channel_sales</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">ch_0</th>
+<td>87.859046</td>
+<td>12.140954</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">ch_3</th>
+<td>89.963636</td>
+<td>10.036364</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">ch_4</th>
+<td>91.601344</td>
+<td>8.398656</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">ch_1</th>
+<td>92.402685</td>
+<td>7.597315</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">ch_2</th>
+<td>94.411286</td>
+<td>5.588714</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">ch_5</th>
+<td>100.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">ch_6</th>
+<td>100.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">ch_7</th>
+<td>100.000000</td>
+<td>0.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="2cf4d887" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>plot_stacked_bars(channel_churn, <span class="st">'Sales channel'</span>, rot_<span class="op">=</span><span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Interestingly, the churning customers are distributed over 5 different values for <code>channel_sales</code>. As well as this, the value of <code>MISSING</code> has a churn rate of 7.6%. <code>MISSING</code> indicates a missing value and was added by the team when they were cleaning the dataset. This feature could be an important feature when it comes to building our model.</p>
+</section>
+<section id="consumption" class="level3">
+<h3 class="anchored" data-anchor-id="consumption">Consumption</h3>
+<p>Let’s see the distribution of the consumption in the last year and month. Since the consumption data is univariate, let’s use histograms to visualize their distribution.</p>
+<div id="d055f10e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>consumption <span class="op">=</span> client_df[[<span class="st">'id'</span>, <span class="st">'cons_12m'</span>, <span class="st">'cons_gas_12m'</span>, <span class="st">'cons_last_month'</span>, <span class="st">'imp_cons'</span>, <span class="st">'has_gas'</span>, <span class="st">'churn'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="9a28757e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_distribution(dataframe, column, ax, bins_<span class="op">=</span><span class="dv">50</span>):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Plot variable distribution in a stacked histogram of churned or retained company</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a temporal dataframe with the data to be plot</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> pd.DataFrame({<span class="st">"Retention"</span>: dataframe[dataframe[<span class="st">"churn"</span>]<span class="op">==</span><span class="dv">0</span>][column],</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Churn"</span>:dataframe[dataframe[<span class="st">"churn"</span>]<span class="op">==</span><span class="dv">1</span>][column]})</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot the histogram</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    temp[[<span class="st">"Retention"</span>,<span class="st">"Churn"</span>]].plot(kind<span class="op">=</span><span class="st">'hist'</span>, bins<span class="op">=</span>bins_, ax<span class="op">=</span>ax, stacked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># X-axis label</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(column)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Change the x-axis to plain style</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    ax.ticklabel_format(style<span class="op">=</span><span class="st">'plain'</span>, axis<span class="op">=</span><span class="st">'x'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="edc098b3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">4</span>, figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">25</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>plot_distribution(consumption, <span class="st">'cons_12m'</span>, axs[<span class="dv">0</span>])</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>plot_distribution(consumption[consumption[<span class="st">'has_gas'</span>] <span class="op">==</span> <span class="st">'t'</span>], <span class="st">'cons_gas_12m'</span>, axs[<span class="dv">1</span>])</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>plot_distribution(consumption, <span class="st">'cons_last_month'</span>, axs[<span class="dv">2</span>])</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>plot_distribution(consumption, <span class="st">'imp_cons'</span>, axs[<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Clearly, the consumption data is highly positively skewed, presenting a very long right-tail towards the higher values of the distribution. The values on the higher and lower end of the distribution are likely to be outliers. We can use a standard plot to visualise the outliers in more detail. A boxplot is a standardized way of displaying the distribution based on a five number summary: - Minimum - First quartile (Q1) - Median - Third quartile (Q3) - Maximum</p>
+<p>It can reveal outliers and what their values are. It can also tell us if our data is symmetrical, how tightly our data is grouped and if/how our data is skewed.</p>
+<div id="a0ccfe87" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">4</span>, figsize<span class="op">=</span>(<span class="dv">18</span>,<span class="dv">25</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot histogram</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>consumption[<span class="st">"cons_12m"</span>], ax<span class="op">=</span>axs[<span class="dv">0</span>])</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>consumption[consumption[<span class="st">"has_gas"</span>] <span class="op">==</span> <span class="st">"t"</span>][<span class="st">"cons_gas_12m"</span>], ax<span class="op">=</span>axs[<span class="dv">1</span>])</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>consumption[<span class="st">"cons_last_month"</span>], ax<span class="op">=</span>axs[<span class="dv">2</span>])</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>consumption[<span class="st">"imp_cons"</span>], ax<span class="op">=</span>axs[<span class="dv">3</span>])</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove scientific notation</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set x-axis limit</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_xlim(<span class="op">-</span><span class="dv">200000</span>, <span class="dv">2000000</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_xlim(<span class="op">-</span><span class="dv">200000</span>, <span class="dv">2000000</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].set_xlim(<span class="op">-</span><span class="dv">20000</span>, <span class="dv">100000</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-21-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We will deal with skewness and outliers during feature engineering in the next exercise.</p>
+</section>
+<section id="forecast" class="level3">
+<h3 class="anchored" data-anchor-id="forecast">Forecast</h3>
+<div id="21bff478" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> client_df[</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"id"</span>, <span class="st">"forecast_cons_12m"</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"forecast_cons_year"</span>,<span class="st">"forecast_discount_energy"</span>,<span class="st">"forecast_meter_rent_12m"</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"forecast_price_energy_off_peak"</span>,<span class="st">"forecast_price_energy_peak"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"forecast_price_pow_off_peak"</span>,<span class="st">"churn"</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="77ca25da" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">7</span>, figsize<span class="op">=</span>(<span class="dv">18</span>,<span class="dv">50</span>))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot histogram</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>plot_distribution(client_df, <span class="st">"forecast_cons_12m"</span>, axs[<span class="dv">0</span>])</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>plot_distribution(client_df, <span class="st">"forecast_cons_year"</span>, axs[<span class="dv">1</span>])</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>plot_distribution(client_df, <span class="st">"forecast_discount_energy"</span>, axs[<span class="dv">2</span>])</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>plot_distribution(client_df, <span class="st">"forecast_meter_rent_12m"</span>, axs[<span class="dv">3</span>])</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>plot_distribution(client_df, <span class="st">"forecast_price_energy_off_peak"</span>, axs[<span class="dv">4</span>])</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>plot_distribution(client_df, <span class="st">"forecast_price_energy_peak"</span>, axs[<span class="dv">5</span>])</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>plot_distribution(client_df, <span class="st">"forecast_price_pow_off_peak"</span>, axs[<span class="dv">6</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-23-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Similarly to the consumption plots, we can observe that a lot of the variables are highly positively skewed, creating a very long tail for the higher values. We will make some transformations during the next exercise to correct for this skewness.</p>
+</section>
+<section id="contract-type" class="level3">
+<h3 class="anchored" data-anchor-id="contract-type">Contract type</h3>
+<div id="c98fb390" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>contract_type <span class="op">=</span> client_df[[<span class="st">'id'</span>, <span class="st">'has_gas'</span>, <span class="st">'churn'</span>]]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>contract <span class="op">=</span> contract_type.groupby([contract_type[<span class="st">'churn'</span>], contract_type[<span class="st">'has_gas'</span>]])[<span class="st">'id'</span>].count().unstack(level<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>contract_percentage <span class="op">=</span> (contract.div(contract.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span>).sort_values(by<span class="op">=</span>[<span class="dv">1</span>], ascending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="7b797da0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>plot_stacked_bars(contract_percentage, <span class="st">'Contract type (with gas)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-25-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="margins" class="level3">
+<h3 class="anchored" data-anchor-id="margins">Margins</h3>
+<div id="f7457f3a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>margin <span class="op">=</span> client_df[[<span class="st">'id'</span>, <span class="st">'margin_gross_pow_ele'</span>, <span class="st">'margin_net_pow_ele'</span>, <span class="st">'net_margin'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="6c43577a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">18</span>,<span class="dv">20</span>))</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot histogram</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>margin[<span class="st">"margin_gross_pow_ele"</span>], ax<span class="op">=</span>axs[<span class="dv">0</span>])</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>margin[<span class="st">"margin_net_pow_ele"</span>],ax<span class="op">=</span>axs[<span class="dv">1</span>])</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>margin[<span class="st">"net_margin"</span>], ax<span class="op">=</span>axs[<span class="dv">2</span>])</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove scientific notation</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># axs[0].ticklabel_format(style='plain', axis='x')</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># axs[1].ticklabel_format(style='plain', axis='x')</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co"># axs[2].ticklabel_format(style='plain', axis='x')</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-27-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see some outliers here as well which we will deal with in the next exercise.</p>
+</section>
+<section id="subscribed-power" class="level3">
+<h3 class="anchored" data-anchor-id="subscribed-power">Subscribed power</h3>
+<div id="cd5732da" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>power <span class="op">=</span> client_df[[<span class="st">'id'</span>, <span class="st">'pow_max'</span>, <span class="st">'churn'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="84d3b9f8" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">10</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>plot_distribution(power, <span class="st">'pow_max'</span>, axs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-29-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="other-columns" class="level3">
+<h3 class="anchored" data-anchor-id="other-columns">Other columns</h3>
+<div id="104843ca" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>others <span class="op">=</span> client_df[[<span class="st">'id'</span>, <span class="st">'nb_prod_act'</span>, <span class="st">'num_years_antig'</span>, <span class="st">'origin_up'</span>, <span class="st">'churn'</span>]]</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>products <span class="op">=</span> others.groupby([others[<span class="st">"nb_prod_act"</span>],others[<span class="st">"churn"</span>]])[<span class="st">"id"</span>].count().unstack(level<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>products_percentage <span class="op">=</span> (products.div(products.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>)<span class="op">*</span><span class="dv">100</span>).sort_values(by<span class="op">=</span>[<span class="dv">1</span>], ascending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="f71567b0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>plot_stacked_bars(products_percentage, <span class="st">"Number of products"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-31-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="3395e95e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>years_antig <span class="op">=</span> others.groupby([others[<span class="st">"num_years_antig"</span>],others[<span class="st">"churn"</span>]])[<span class="st">"id"</span>].count().unstack(level<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>years_antig_percentage <span class="op">=</span> (years_antig.div(years_antig.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>)<span class="op">*</span><span class="dv">100</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>plot_stacked_bars(years_antig_percentage, <span class="st">"Number years"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-32-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="9c6c4293" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>origin <span class="op">=</span> others.groupby([others[<span class="st">"origin_up"</span>],others[<span class="st">"churn"</span>]])[<span class="st">"id"</span>].count().unstack(level<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>origin_percentage <span class="op">=</span> (origin.div(origin.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>)<span class="op">*</span><span class="dv">100</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>plot_stacked_bars(origin_percentage, <span class="st">"Origin contract/offer"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task 2 - Model Answer - EDA (2)_files/figure-html/cell-33-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/Ramon-PR\.github\.io\/BCG-DataScience-The-Forage");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Ramon-PR/BCG-DataScience-The-Forage/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

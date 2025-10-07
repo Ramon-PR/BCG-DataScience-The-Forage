@@ -1,0 +1,3223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploratory Data Analysis Starter – BCG-DataScience-The-Forage</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-000f0825b9c55ed21d14970d810c14a9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Exploratory Data Analysis Starter – BCG-DataScience-The-Forage">
+<meta property="og:image" content="https://Ramon-PR.github.io/BCG-DataScience-The-Forage/Task2_Data_exploration_files/figure-html/cell-20-output-2.png">
+<meta property="og:site_name" content="BCG-DataScience-The-Forage">
+<meta property="og:image:height" content="299">
+<meta property="og:image:width" content="393">
+<meta name="twitter:title" content="Exploratory Data Analysis Starter – BCG-DataScience-The-Forage">
+<meta name="twitter:image" content="https://Ramon-PR.github.io/BCG-DataScience-The-Forage/Task2_Data_exploration_files/figure-html/cell-20-output-2.png">
+<meta name="twitter:image-height" content="299">
+<meta name="twitter:image-width" content="393">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">BCG-DataScience-The-Forage</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./task2_data_exploration.html">Exploratory Data Analysis Starter</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="./index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BCG-DataScience-The-Forage</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task 2 - model answer - eda (2).html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploratory Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task 2 - eda_starter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploratory Data Analysis Starter</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task 3 - model answer - feature engineering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feature Engineering and Modelling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task 3 - feature_engineering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feature Engineering</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task2_data_exploration.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Exploratory Data Analysis Starter</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task3_ferature_engineering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feature Engineering</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./task4_modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feature Engineering and Modelling</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#file-management" id="toc-file-management" class="nav-link active" data-scroll-target="#file-management">File management</a>
+  <ul class="collapse">
+  <li><a href="#import-packages" id="toc-import-packages" class="nav-link" data-scroll-target="#import-packages">Import packages</a></li>
+  <li><a href="#folder-and-data-loading" id="toc-folder-and-data-loading" class="nav-link" data-scroll-target="#folder-and-data-loading">Folder and data loading</a></li>
+  </ul></li>
+  <li><a href="#info-of-the-dataframes" id="toc-info-of-the-dataframes" class="nav-link" data-scroll-target="#info-of-the-dataframes">Info of the dataframes</a>
+  <ul class="collapse">
+  <li><a href="#client-dataset" id="toc-client-dataset" class="nav-link" data-scroll-target="#client-dataset">Client Dataset</a></li>
+  <li><a href="#price-dataset" id="toc-price-dataset" class="nav-link" data-scroll-target="#price-dataset">Price Dataset</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#statistics" id="toc-statistics" class="nav-link" data-scroll-target="#statistics">Statistics</a>
+  <ul class="collapse">
+  <li><a href="#client-dataset-1" id="toc-client-dataset-1" class="nav-link" data-scroll-target="#client-dataset-1">Client Dataset</a></li>
+  <li><a href="#price-dataset-1" id="toc-price-dataset-1" class="nav-link" data-scroll-target="#price-dataset-1">Price Dataset</a></li>
+  </ul></li>
+  <li><a href="#data-visualization" id="toc-data-visualization" class="nav-link" data-scroll-target="#data-visualization">Data visualization</a>
+  <ul class="collapse">
+  <li><a href="#imports" id="toc-imports" class="nav-link" data-scroll-target="#imports">Imports</a></li>
+  <li><a href="#functions-for-stacked-bar-plots" id="toc-functions-for-stacked-bar-plots" class="nav-link" data-scroll-target="#functions-for-stacked-bar-plots">Functions for stacked bar plots</a></li>
+  <li><a href="#statistics-of-churning" id="toc-statistics-of-churning" class="nav-link" data-scroll-target="#statistics-of-churning">Statistics of churning:</a></li>
+  <li><a href="#histogram" id="toc-histogram" class="nav-link" data-scroll-target="#histogram">Histogram</a></li>
+  <li><a href="#time-series" id="toc-time-series" class="nav-link" data-scroll-target="#time-series">Time series</a>
+  <ul class="collapse">
+  <li><a href="#prices-for-the-channels-that-does-not-have-churning" id="toc-prices-for-the-channels-that-does-not-have-churning" class="nav-link" data-scroll-target="#prices-for-the-channels-that-does-not-have-churning">Prices for the channels that does not have churning</a></li>
+  </ul></li>
+  <li><a href="#extra-analysis-on-prices" id="toc-extra-analysis-on-prices" class="nav-link" data-scroll-target="#extra-analysis-on-prices">Extra analysis on prices:</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/Ramon-PR/BCG-DataScience-The-Forage/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="task2_data_exploration.html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exploratory Data Analysis Starter</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="file-management" class="level2">
+<h2 class="anchored" data-anchor-id="file-management">File management</h2>
+<section id="import-packages" class="level3">
+<h3 class="anchored" data-anchor-id="import-packages">Import packages</h3>
+<div id="0c7fd70d" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="folder-and-data-loading" class="level3">
+<h3 class="anchored" data-anchor-id="folder-and-data-loading">Folder and data loading</h3>
+<div id="1cb498fa" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>root <span class="op">=</span> Path(<span class="st">"../"</span>).resolve()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> root<span class="op">/</span><span class="st">"resources"</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>path_client_data <span class="op">=</span> source<span class="op">/</span><span class="st">"client_data.csv"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>path_price_data <span class="op">=</span> source<span class="op">/</span><span class="st">"price_data.csv"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> path_client_data.exists(), <span class="ss">f"Client data file not found at </span><span class="sc">{</span>path_client_data<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> path_price_data.exists(), <span class="ss">f"Price data file not found at </span><span class="sc">{</span>path_price_data<span class="sc">}</span><span class="ss">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cc62c6f7" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>client_df <span class="op">=</span> pl.read_csv(path_client_data, try_parse_dates<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>price_df <span class="op">=</span> pl.read_csv(path_price_data, try_parse_dates<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="info-of-the-dataframes" class="level2">
+<h2 class="anchored" data-anchor-id="info-of-the-dataframes">Info of the dataframes</h2>
+<div id="b1ece59f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_polars_shape(df<span class="op">=</span>client_df, df_element_name:<span class="bu">str</span><span class="op">=</span><span class="st">"Clients"</span>):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    table <span class="op">=</span> pl.DataFrame(data<span class="op">=</span>[df.shape], schema<span class="op">=</span>[df_element_name, <span class="st">"Columns"</span>], orient<span class="op">=</span><span class="st">"row"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    display(table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="client-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="client-dataset">Client Dataset</h3>
+<section id="datatypes" class="level4">
+<h4 class="anchored" data-anchor-id="datatypes">Datatypes</h4>
+<div id="77a57273" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>client_df.schema</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>Schema([('id', String),
+        ('channel_sales', String),
+        ('cons_12m', Int64),
+        ('cons_gas_12m', Int64),
+        ('cons_last_month', Int64),
+        ('date_activ', Date),
+        ('date_end', Date),
+        ('date_modif_prod', Date),
+        ('date_renewal', Date),
+        ('forecast_cons_12m', Float64),
+        ('forecast_cons_year', Int64),
+        ('forecast_discount_energy', Float64),
+        ('forecast_meter_rent_12m', Float64),
+        ('forecast_price_energy_off_peak', Float64),
+        ('forecast_price_energy_peak', Float64),
+        ('forecast_price_pow_off_peak', Float64),
+        ('has_gas', String),
+        ('imp_cons', Float64),
+        ('margin_gross_pow_ele', Float64),
+        ('margin_net_pow_ele', Float64),
+        ('nb_prod_act', Int64),
+        ('net_margin', Float64),
+        ('num_years_antig', Int64),
+        ('origin_up', String),
+        ('pow_max', Float64),
+        ('churn', Int64)])</code></pre>
+</div>
+</div>
+<div id="d005573a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>client_df.sample(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 26)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">channel_sales</th>
+<th data-quarto-table-cell-role="th">cons_12m</th>
+<th data-quarto-table-cell-role="th">cons_gas_12m</th>
+<th data-quarto-table-cell-role="th">cons_last_month</th>
+<th data-quarto-table-cell-role="th">date_activ</th>
+<th data-quarto-table-cell-role="th">date_end</th>
+<th data-quarto-table-cell-role="th">date_modif_prod</th>
+<th data-quarto-table-cell-role="th">date_renewal</th>
+<th data-quarto-table-cell-role="th">forecast_cons_12m</th>
+<th data-quarto-table-cell-role="th">forecast_cons_year</th>
+<th data-quarto-table-cell-role="th">forecast_discount_energy</th>
+<th data-quarto-table-cell-role="th">forecast_meter_rent_12m</th>
+<th data-quarto-table-cell-role="th">forecast_price_energy_off_peak</th>
+<th data-quarto-table-cell-role="th">forecast_price_energy_peak</th>
+<th data-quarto-table-cell-role="th">forecast_price_pow_off_peak</th>
+<th data-quarto-table-cell-role="th">has_gas</th>
+<th data-quarto-table-cell-role="th">imp_cons</th>
+<th data-quarto-table-cell-role="th">margin_gross_pow_ele</th>
+<th data-quarto-table-cell-role="th">margin_net_pow_ele</th>
+<th data-quarto-table-cell-role="th">nb_prod_act</th>
+<th data-quarto-table-cell-role="th">net_margin</th>
+<th data-quarto-table-cell-role="th">num_years_antig</th>
+<th data-quarto-table-cell-role="th">origin_up</th>
+<th data-quarto-table-cell-role="th">pow_max</th>
+<th data-quarto-table-cell-role="th">churn</th>
+</tr>
+<tr class="even">
+<td>str</td>
+<td>str</td>
+<td>i64</td>
+<td>i64</td>
+<td>i64</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>f64</td>
+<td>i64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>i64</td>
+<td>f64</td>
+<td>i64</td>
+<td>str</td>
+<td>f64</td>
+<td>i64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"8c79c2a9e407a9f5f0dffbabbb193d…</td>
+<td>"lmkebamcaaclubfxadlmueccxoimle…</td>
+<td>5731448</td>
+<td>0</td>
+<td>771203</td>
+<td>2011-07-20</td>
+<td>2016-04-30</td>
+<td>2014-04-24</td>
+<td>2015-05-01</td>
+<td>7087.21</td>
+<td>9311</td>
+<td>0.0</td>
+<td>144.0</td>
+<td>0.114017</td>
+<td>0.097679</td>
+<td>40.606701</td>
+<td>"f"</td>
+<td>826.53</td>
+<td>21.86</td>
+<td>21.86</td>
+<td>1</td>
+<td>751.48</td>
+<td>5</td>
+<td>"lxidpiddsbxsbosboudacockeimpue…</td>
+<td>27.713</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>"f3e583108700fa2a9c87043d060b35…</td>
+<td>"MISSING"</td>
+<td>4658</td>
+<td>0</td>
+<td>963</td>
+<td>2011-10-20</td>
+<td>2016-10-20</td>
+<td>2011-10-20</td>
+<td>2015-10-23</td>
+<td>446.32</td>
+<td>963</td>
+<td>0.0</td>
+<td>132.15</td>
+<td>0.116509</td>
+<td>0.101397</td>
+<td>41.271364</td>
+<td>"f"</td>
+<td>90.86</td>
+<td>53.12</td>
+<td>53.12</td>
+<td>1</td>
+<td>44.08</td>
+<td>4</td>
+<td>"ldkssxwpmemidmecebumciepifcamk…</td>
+<td>26.6</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>"cf6ae01ad255d1a467358a69eb018a…</td>
+<td>"foosdfpfkusacimwkcsosbicdxkica…</td>
+<td>13551</td>
+<td>0</td>
+<td>2520</td>
+<td>2010-05-28</td>
+<td>2016-05-28</td>
+<td>2010-05-28</td>
+<td>2015-06-01</td>
+<td>1988.86</td>
+<td>2520</td>
+<td>0.0</td>
+<td>20.08</td>
+<td>0.142819</td>
+<td>0.0</td>
+<td>44.311378</td>
+<td>"f"</td>
+<td>363.69</td>
+<td>21.81</td>
+<td>21.81</td>
+<td>1</td>
+<td>161.74</td>
+<td>6</td>
+<td>"lxidpiddsbxsbosboudacockeimpue…</td>
+<td>13.15</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="analysis" class="level4">
+<h4 class="anchored" data-anchor-id="analysis">Analysis</h4>
+<p>The size of the dataset</p>
+<div id="c138b875" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>print_polars_shape(client_df, <span class="st">"Clients"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Clients</th>
+<th data-quarto-table-cell-role="th">Columns</th>
+</tr>
+<tr class="even">
+<td>i64</td>
+<td>i64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>14606</td>
+<td>26</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="669632f4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># date_cont_end = pl.col("date_end").str.to_date(format="%Y-%m-%d")</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>date_cont_end <span class="op">=</span> pl.col(<span class="st">"date_end"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>year_end <span class="op">=</span> date_cont_end.dt.year().alias(<span class="st">"year_end"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>month_end <span class="op">=</span> date_cont_end.dt.month().alias(<span class="st">"month_end"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>client_df.select(pl.col(<span class="st">"churn"</span>), year_end, month_end).group_by(pl.col(<span class="st">"year_end"</span>)).agg(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"churn"</span>).<span class="bu">len</span>().alias(<span class="st">"Clients_ended_contract"</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"churn"</span>).<span class="bu">sum</span>().alias(<span class="st">"Clients_churned"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    ).sort(<span class="st">"year_end"</span>, descending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">year_end</th>
+<th data-quarto-table-cell-role="th">Clients_ended_contract</th>
+<th data-quarto-table-cell-role="th">Clients_churned</th>
+</tr>
+<tr class="even">
+<td>i32</td>
+<td>u32</td>
+<td>i64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2016</td>
+<td>13663</td>
+<td>1318</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>943</td>
+<td>101</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>It is also interesting to see how many unique values are in each column.</p>
+<div id="869a1b51" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>unique_counts <span class="op">=</span> client_df.select([</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    pl.col(col).n_unique().alias(<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_n_unique"</span>) <span class="cf">for</span> col <span class="kw">in</span> client_df.columns</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>display(unique_counts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 26)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">id_n_unique</th>
+<th data-quarto-table-cell-role="th">channel_sales_n_unique</th>
+<th data-quarto-table-cell-role="th">cons_12m_n_unique</th>
+<th data-quarto-table-cell-role="th">cons_gas_12m_n_unique</th>
+<th data-quarto-table-cell-role="th">cons_last_month_n_unique</th>
+<th data-quarto-table-cell-role="th">date_activ_n_unique</th>
+<th data-quarto-table-cell-role="th">date_end_n_unique</th>
+<th data-quarto-table-cell-role="th">date_modif_prod_n_unique</th>
+<th data-quarto-table-cell-role="th">date_renewal_n_unique</th>
+<th data-quarto-table-cell-role="th">forecast_cons_12m_n_unique</th>
+<th data-quarto-table-cell-role="th">forecast_cons_year_n_unique</th>
+<th data-quarto-table-cell-role="th">forecast_discount_energy_n_unique</th>
+<th data-quarto-table-cell-role="th">forecast_meter_rent_12m_n_unique</th>
+<th data-quarto-table-cell-role="th">forecast_price_energy_off_peak_n_unique</th>
+<th data-quarto-table-cell-role="th">forecast_price_energy_peak_n_unique</th>
+<th data-quarto-table-cell-role="th">forecast_price_pow_off_peak_n_unique</th>
+<th data-quarto-table-cell-role="th">has_gas_n_unique</th>
+<th data-quarto-table-cell-role="th">imp_cons_n_unique</th>
+<th data-quarto-table-cell-role="th">margin_gross_pow_ele_n_unique</th>
+<th data-quarto-table-cell-role="th">margin_net_pow_ele_n_unique</th>
+<th data-quarto-table-cell-role="th">nb_prod_act_n_unique</th>
+<th data-quarto-table-cell-role="th">net_margin_n_unique</th>
+<th data-quarto-table-cell-role="th">num_years_antig_n_unique</th>
+<th data-quarto-table-cell-role="th">origin_up_n_unique</th>
+<th data-quarto-table-cell-role="th">pow_max_n_unique</th>
+<th data-quarto-table-cell-role="th">churn_n_unique</th>
+</tr>
+<tr class="even">
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>14606</td>
+<td>8</td>
+<td>11065</td>
+<td>2112</td>
+<td>4751</td>
+<td>1796</td>
+<td>368</td>
+<td>2129</td>
+<td>386</td>
+<td>13993</td>
+<td>4218</td>
+<td>12</td>
+<td>3528</td>
+<td>516</td>
+<td>329</td>
+<td>41</td>
+<td>2</td>
+<td>7752</td>
+<td>2391</td>
+<td>2391</td>
+<td>10</td>
+<td>11965</td>
+<td>13</td>
+<td>6</td>
+<td>698</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Fields with a low number of unique values are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Field</th>
+<th style="text-align: right;">Number of unique values</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">channel_sales</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">forecast_discount_energy</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">has_gas</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nb_prod_act</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">num_years_antig</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">origin_up</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">churn</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>There are 14606 unique clients, same as the number of rows in the dataset. This means that for each client there is only one row with all the information of this dataset (No need to group_by “id”).<br>
+</li>
+<li>There is field “has_gas” and it is reported the consumption of electricity and gas.<br>
+</li>
+<li>The field “nb_prod_act” (number of active products and services) has 10 unique values. We only know about the electricity and gas consumption. I can not relate this field with the gas and electricity contracts.</li>
+</ul>
+</section>
+</section>
+<section id="price-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="price-dataset">Price Dataset</h3>
+<section id="datatypes-1" class="level4">
+<h4 class="anchored" data-anchor-id="datatypes-1">Datatypes</h4>
+<div id="fd89e242" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>price_df.schema</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>Schema([('id', String),
+        ('price_date', Date),
+        ('price_off_peak_var', Float64),
+        ('price_peak_var', Float64),
+        ('price_mid_peak_var', Float64),
+        ('price_off_peak_fix', Float64),
+        ('price_peak_fix', Float64),
+        ('price_mid_peak_fix', Float64)])</code></pre>
+</div>
+</div>
+<div id="92ba805a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>price_df.sample(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 8)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">price_date</th>
+<th data-quarto-table-cell-role="th">price_off_peak_var</th>
+<th data-quarto-table-cell-role="th">price_peak_var</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_var</th>
+<th data-quarto-table-cell-role="th">price_off_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_fix</th>
+</tr>
+<tr class="even">
+<td>str</td>
+<td>date</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"99f895630331727510e28852b3eb0a…</td>
+<td>2015-06-01</td>
+<td>0.152445</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>44.26693</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<td>"1ae23d4880f064e544ac5d73404e03…</td>
+<td>2015-09-01</td>
+<td>0.115854</td>
+<td>0.098169</td>
+<td>0.072195</td>
+<td>40.728885</td>
+<td>24.43733</td>
+<td>16.291555</td>
+</tr>
+<tr class="odd">
+<td>"a63219d8733292921e0c6607d58184…</td>
+<td>2015-04-01</td>
+<td>0.128069</td>
+<td>0.105842</td>
+<td>0.073773</td>
+<td>40.728885</td>
+<td>24.43733</td>
+<td>16.291555</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="analysis-1" class="level4">
+<h4 class="anchored" data-anchor-id="analysis-1">Analysis</h4>
+<div id="c5ee18da" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>print_polars_shape(price_df, <span class="st">"Prices"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Prices</th>
+<th data-quarto-table-cell-role="th">Columns</th>
+</tr>
+<tr class="even">
+<td>i64</td>
+<td>i64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>193002</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="5de733da" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>unique_counts <span class="op">=</span> price_df.select([</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    pl.col(col).n_unique().alias(<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_n_unique"</span>) <span class="cf">for</span> col <span class="kw">in</span> price_df.columns</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>display(unique_counts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 8)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">id_n_unique</th>
+<th data-quarto-table-cell-role="th">price_date_n_unique</th>
+<th data-quarto-table-cell-role="th">price_off_peak_var_n_unique</th>
+<th data-quarto-table-cell-role="th">price_peak_var_n_unique</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_var_n_unique</th>
+<th data-quarto-table-cell-role="th">price_off_peak_fix_n_unique</th>
+<th data-quarto-table-cell-role="th">price_peak_fix_n_unique</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_fix_n_unique</th>
+</tr>
+<tr class="even">
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+<td>u32</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>16096</td>
+<td>12</td>
+<td>1853</td>
+<td>1189</td>
+<td>711</td>
+<td>66</td>
+<td>31</td>
+<td>28</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>In price_data.csv there are 16096 unique ids, different than the 14606 unique ids in client_data.csv</p>
+<p>The number of unique price_date values is 12, and correspond to the first day of each month during year 2015:</p>
+<div id="bb92530e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>price_df.select(pl.col(<span class="st">"price_date"</span>).unique().alias(<span class="st">"unique_dates"</span>)).sort(<span class="st">"unique_dates"</span>, descending<span class="op">=</span><span class="va">False</span>).transpose()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 12)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">column_0</th>
+<th data-quarto-table-cell-role="th">column_1</th>
+<th data-quarto-table-cell-role="th">column_2</th>
+<th data-quarto-table-cell-role="th">column_3</th>
+<th data-quarto-table-cell-role="th">column_4</th>
+<th data-quarto-table-cell-role="th">column_5</th>
+<th data-quarto-table-cell-role="th">column_6</th>
+<th data-quarto-table-cell-role="th">column_7</th>
+<th data-quarto-table-cell-role="th">column_8</th>
+<th data-quarto-table-cell-role="th">column_9</th>
+<th data-quarto-table-cell-role="th">column_10</th>
+<th data-quarto-table-cell-role="th">column_11</th>
+</tr>
+<tr class="even">
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+<td>date</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2015-01-01</td>
+<td>2015-02-01</td>
+<td>2015-03-01</td>
+<td>2015-04-01</td>
+<td>2015-05-01</td>
+<td>2015-06-01</td>
+<td>2015-07-01</td>
+<td>2015-08-01</td>
+<td>2015-09-01</td>
+<td>2015-10-01</td>
+<td>2015-11-01</td>
+<td>2015-12-01</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Some clients do not have data points in some months</p>
+</section>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 67%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Client_df</th>
+<th style="text-align: right;">Price_df</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Num of clients</td>
+<td style="text-align: left;">14606</td>
+<td style="text-align: right;">16096</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">churn info</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: right;">no</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">contract related dates</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: right;">no</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Temporal data</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: right;">yes (Only year 2015)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Churn data is only in the client dataset<br>
+</li>
+<li>churn = has the client churned over the next 3 months<br>
+</li>
+<li>I have no information relating the field <strong>churn</strong> with the temporal series (Price dataset: year 2015), since the end contract dates are out of the scope of year 2015.</li>
+<li><strong>churn</strong>: churned in the next 3 months from what date?<br>
+</li>
+<li>Not all the clients in the Price dataset have information for each month in 2015.</li>
+</ul>
+</section>
+<section id="statistics" class="level2">
+<h2 class="anchored" data-anchor-id="statistics">Statistics</h2>
+<section id="client-dataset-1" class="level3">
+<h3 class="anchored" data-anchor-id="client-dataset-1">Client Dataset</h3>
+<div id="60107d9b" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>client_df.select(pl.<span class="bu">all</span>().exclude([<span class="st">"id"</span>, <span class="st">"channel_sales"</span>])).describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (9, 25)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">statistic</th>
+<th data-quarto-table-cell-role="th">cons_12m</th>
+<th data-quarto-table-cell-role="th">cons_gas_12m</th>
+<th data-quarto-table-cell-role="th">cons_last_month</th>
+<th data-quarto-table-cell-role="th">date_activ</th>
+<th data-quarto-table-cell-role="th">date_end</th>
+<th data-quarto-table-cell-role="th">date_modif_prod</th>
+<th data-quarto-table-cell-role="th">date_renewal</th>
+<th data-quarto-table-cell-role="th">forecast_cons_12m</th>
+<th data-quarto-table-cell-role="th">forecast_cons_year</th>
+<th data-quarto-table-cell-role="th">forecast_discount_energy</th>
+<th data-quarto-table-cell-role="th">forecast_meter_rent_12m</th>
+<th data-quarto-table-cell-role="th">forecast_price_energy_off_peak</th>
+<th data-quarto-table-cell-role="th">forecast_price_energy_peak</th>
+<th data-quarto-table-cell-role="th">forecast_price_pow_off_peak</th>
+<th data-quarto-table-cell-role="th">has_gas</th>
+<th data-quarto-table-cell-role="th">imp_cons</th>
+<th data-quarto-table-cell-role="th">margin_gross_pow_ele</th>
+<th data-quarto-table-cell-role="th">margin_net_pow_ele</th>
+<th data-quarto-table-cell-role="th">nb_prod_act</th>
+<th data-quarto-table-cell-role="th">net_margin</th>
+<th data-quarto-table-cell-role="th">num_years_antig</th>
+<th data-quarto-table-cell-role="th">origin_up</th>
+<th data-quarto-table-cell-role="th">pow_max</th>
+<th data-quarto-table-cell-role="th">churn</th>
+</tr>
+<tr class="even">
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>str</td>
+<td>str</td>
+<td>str</td>
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"count"</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>"14606"</td>
+<td>"14606"</td>
+<td>"14606"</td>
+<td>"14606"</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>"14606"</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>14606.0</td>
+<td>"14606"</td>
+<td>14606.0</td>
+<td>14606.0</td>
+</tr>
+<tr class="even">
+<td>"null_count"</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>"0"</td>
+<td>"0"</td>
+<td>"0"</td>
+<td>"0"</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>"0"</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>"0"</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"mean"</td>
+<td>159220.286252</td>
+<td>28092.375325</td>
+<td>16090.269752</td>
+<td>"2011-01-28 07:54:18.879000"</td>
+<td>"2016-07-27 20:48:26.422000"</td>
+<td>"2013-01-02 12:29:10.951000"</td>
+<td>"2015-07-21 06:59:00.353000"</td>
+<td>1868.61488</td>
+<td>1399.762906</td>
+<td>0.966726</td>
+<td>63.086871</td>
+<td>0.137283</td>
+<td>0.050491</td>
+<td>43.130056</td>
+<td>null</td>
+<td>152.786896</td>
+<td>24.565121</td>
+<td>24.562517</td>
+<td>1.292346</td>
+<td>189.264522</td>
+<td>4.997809</td>
+<td>null</td>
+<td>18.135136</td>
+<td>0.097152</td>
+</tr>
+<tr class="even">
+<td>"std"</td>
+<td>573465.264198</td>
+<td>162973.059057</td>
+<td>64364.196422</td>
+<td>null</td>
+<td>null</td>
+<td>null</td>
+<td>null</td>
+<td>2387.571531</td>
+<td>3247.786255</td>
+<td>5.108289</td>
+<td>66.165783</td>
+<td>0.024623</td>
+<td>0.049037</td>
+<td>4.485988</td>
+<td>null</td>
+<td>341.369366</td>
+<td>20.231172</td>
+<td>20.23028</td>
+<td>0.709774</td>
+<td>311.79813</td>
+<td>1.611749</td>
+<td>null</td>
+<td>13.534743</td>
+<td>0.296175</td>
+</tr>
+<tr class="odd">
+<td>"min"</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>"2003-05-09"</td>
+<td>"2016-01-28"</td>
+<td>"2003-05-09"</td>
+<td>"2013-06-26"</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>"f"</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>"MISSING"</td>
+<td>3.3</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<td>"25%"</td>
+<td>5674.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>"2010-01-15"</td>
+<td>"2016-04-27"</td>
+<td>"2010-08-12"</td>
+<td>"2015-04-17"</td>
+<td>494.98</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>16.18</td>
+<td>0.11634</td>
+<td>0.0</td>
+<td>40.606701</td>
+<td>null</td>
+<td>0.0</td>
+<td>14.28</td>
+<td>14.28</td>
+<td>1.0</td>
+<td>50.71</td>
+<td>4.0</td>
+<td>null</td>
+<td>12.5</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"50%"</td>
+<td>14116.0</td>
+<td>0.0</td>
+<td>793.0</td>
+<td>"2011-03-04"</td>
+<td>"2016-08-01"</td>
+<td>"2013-06-20"</td>
+<td>"2015-07-27"</td>
+<td>1113.14</td>
+<td>314.0</td>
+<td>0.0</td>
+<td>18.8</td>
+<td>0.143166</td>
+<td>0.084138</td>
+<td>44.311378</td>
+<td>null</td>
+<td>37.4</td>
+<td>21.64</td>
+<td>21.64</td>
+<td>1.0</td>
+<td>112.56</td>
+<td>5.0</td>
+<td>null</td>
+<td>13.856</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<td>"75%"</td>
+<td>40764.0</td>
+<td>0.0</td>
+<td>3383.0</td>
+<td>"2012-04-19"</td>
+<td>"2016-10-31"</td>
+<td>"2015-06-16"</td>
+<td>"2015-10-29"</td>
+<td>2402.27</td>
+<td>1746.0</td>
+<td>0.0</td>
+<td>131.03</td>
+<td>0.146348</td>
+<td>0.098837</td>
+<td>44.311378</td>
+<td>null</td>
+<td>193.99</td>
+<td>29.88</td>
+<td>29.88</td>
+<td>1.0</td>
+<td>243.13</td>
+<td>6.0</td>
+<td>null</td>
+<td>19.18</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"max"</td>
+<td>6.207104e6</td>
+<td>4.15459e6</td>
+<td>771203.0</td>
+<td>"2014-09-01"</td>
+<td>"2017-06-13"</td>
+<td>"2016-01-29"</td>
+<td>"2016-01-28"</td>
+<td>82902.83</td>
+<td>175375.0</td>
+<td>30.0</td>
+<td>599.31</td>
+<td>0.273963</td>
+<td>0.195975</td>
+<td>59.266378</td>
+<td>"t"</td>
+<td>15042.79</td>
+<td>374.64</td>
+<td>374.64</td>
+<td>32.0</td>
+<td>24570.65</td>
+<td>13.0</td>
+<td>"usapbepcfoloekilkwsdiboslwaxob…</td>
+<td>320.0</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We can see that the price_data.csv only includes a period of one year, but client_data.csv has clients that started, modified or ended their contract in different years. To use both datasets, we will need to match clients in both datasets, that did not finished their contract before 2015, so they should have historical price data in price_data.csv</p>
+</section>
+<section id="price-dataset-1" class="level3">
+<h3 class="anchored" data-anchor-id="price-dataset-1">Price Dataset</h3>
+<div id="c0e4c920" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>price_df.select(pl.<span class="bu">all</span>().exclude(<span class="st">"id"</span>)).describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (9, 8)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">statistic</th>
+<th data-quarto-table-cell-role="th">price_date</th>
+<th data-quarto-table-cell-role="th">price_off_peak_var</th>
+<th data-quarto-table-cell-role="th">price_peak_var</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_var</th>
+<th data-quarto-table-cell-role="th">price_off_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_fix</th>
+</tr>
+<tr class="even">
+<td>str</td>
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"count"</td>
+<td>"193002"</td>
+<td>193002.0</td>
+<td>193002.0</td>
+<td>193002.0</td>
+<td>193002.0</td>
+<td>193002.0</td>
+<td>193002.0</td>
+</tr>
+<tr class="even">
+<td>"null_count"</td>
+<td>"0"</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"mean"</td>
+<td>"2015-06-16 12:50:49.933000"</td>
+<td>0.141027</td>
+<td>0.05463</td>
+<td>0.030496</td>
+<td>43.334477</td>
+<td>10.622875</td>
+<td>6.409984</td>
+</tr>
+<tr class="even">
+<td>"std"</td>
+<td>null</td>
+<td>0.025032</td>
+<td>0.049924</td>
+<td>0.036298</td>
+<td>5.410297</td>
+<td>12.841895</td>
+<td>7.773592</td>
+</tr>
+<tr class="odd">
+<td>"min"</td>
+<td>"2015-01-01"</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<td>"25%"</td>
+<td>"2015-04-01"</td>
+<td>0.125976</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>40.728885</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"50%"</td>
+<td>"2015-07-01"</td>
+<td>0.146033</td>
+<td>0.085483</td>
+<td>0.0</td>
+<td>44.26693</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<td>"75%"</td>
+<td>"2015-10-01"</td>
+<td>0.151635</td>
+<td>0.101673</td>
+<td>0.072558</td>
+<td>44.44471</td>
+<td>24.339581</td>
+<td>16.226389</td>
+</tr>
+<tr class="odd">
+<td>"max"</td>
+<td>"2015-12-01"</td>
+<td>0.2807</td>
+<td>0.229788</td>
+<td>0.114102</td>
+<td>59.44471</td>
+<td>36.490692</td>
+<td>17.458221</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="data-visualization" class="level1">
+<h1>Data visualization</h1>
+<section id="imports" class="level2">
+<h2 class="anchored" data-anchor-id="imports">Imports</h2>
+<div id="1334e2fd" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> List, Optional</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.axes <span class="im">import</span> Axes</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Set plot style</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>sns.set_theme(color_codes<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="functions-for-stacked-bar-plots" class="level2">
+<h2 class="anchored" data-anchor-id="functions-for-stacked-bar-plots">Functions for stacked bar plots</h2>
+<div id="c95c711a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> annotate_stacked_bars(ax, pad<span class="op">=</span><span class="fl">0.99</span>, colour<span class="op">=</span><span class="st">"white"</span>, textsize<span class="op">=</span><span class="dv">13</span>):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Add value annotations to the bars</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Iterate over the plotted rectanges/bars</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> p <span class="kw">in</span> ax.patches:</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate annotation</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">str</span>(<span class="bu">round</span>(p.get_height(),<span class="dv">1</span>))</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If value is 0 do not annotate</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> value <span class="op">==</span> <span class="st">'0.0'</span>:</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        ax.annotate(</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>            value,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>            ((p.get_x()<span class="op">+</span> p.get_width()<span class="op">/</span><span class="dv">2</span>)<span class="op">*</span>pad<span class="op">-</span><span class="fl">0.05</span>, (p.get_y()<span class="op">+</span>p.get_height()<span class="op">/</span><span class="dv">2</span>)<span class="op">*</span>pad),</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>            color<span class="op">=</span>colour,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>            size<span class="op">=</span>textsize</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> df_stacked_bar_plot(df, x: <span class="bu">str</span>, y:List[<span class="bu">str</span>], title:<span class="bu">str</span><span class="op">=</span><span class="st">""</span>, ylabel:<span class="bu">str</span> <span class="op">=</span><span class="st">""</span>, ax: Optional[Axes] <span class="op">=</span> <span class="va">None</span>):</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="co">    Stacked bar plot from a DataFrame.</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="co">    -----------------------------------------</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a><span class="co">    df: DataFrame containing the data to plot</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a><span class="co">    x: Column name for the x-axis</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a><span class="co">    y: List of column names for the y-axis</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a><span class="co">    title: Title of the plot</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="co">    ylabel: Label for the y-axis</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="co">    ax: Matplotlib axes object to draw on. If None, a new figure and axes are created.</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If ax is provided, use it; otherwise, create a new figure       </span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>    new_fig <span class="op">=</span> (ax <span class="kw">is</span> <span class="va">None</span>)</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> new_fig:</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>        fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>)) <span class="co"># figsize es relevante aquí</span></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>    plt.sca(ax)</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract the series for x and y from the DataFrame</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>    serie_x <span class="op">=</span> df[x] </span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>    serie_y0 <span class="op">=</span> df[y[<span class="dv">0</span>]]<span class="op">*</span><span class="dv">0</span></span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot each series in y as a stacked bar</span></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> yi <span class="kw">in</span> y:</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>        serie_yi <span class="op">=</span> df[yi]</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>        plt.bar(x<span class="op">=</span>serie_x, height<span class="op">=</span>serie_yi, bottom<span class="op">=</span>serie_y0, width<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>        serie_y0 <span class="op">+=</span> serie_yi</span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set labels and title</span></span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(ylabel)</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>    plt.legend(y, loc<span class="op">=</span><span class="st">"lower right"</span>)</span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>    plt.title(title)</span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Adjust x-axis limits for single bar correction</span></span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>    one_bar_plot_width_correction(serie_x)</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Only if it has created a new figure</span></span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> new_fig:</span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a>        plt.show()</span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> one_bar_plot_width_correction(x):</span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Adjusts the x-axis limits for a single bar plot.</span></span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a><span class="co">    If there is only one bar,</span></span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a><span class="co">    it sets the x-limits to -1 and 1 for string types,</span></span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a><span class="co">    or to the minimum and maximum values plus/minus 1 for numeric types.</span></span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(x) <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">type</span>(x[<span class="dv">0</span>]) <span class="kw">is</span> <span class="bu">str</span>:</span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a>            plt.xlim(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">type</span>(x[<span class="dv">0</span>]) <span class="kw">is</span> <span class="bu">float</span> <span class="kw">or</span> <span class="bu">type</span>(x[<span class="dv">0</span>]) <span class="kw">is</span> <span class="bu">int</span>:</span>
+<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a>            plt.xlim(<span class="bu">min</span>(x)<span class="op">-</span><span class="dv">1</span>, <span class="bu">max</span>(x)<span class="op">+</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="statistics-of-churning" class="level2">
+<h2 class="anchored" data-anchor-id="statistics-of-churning">Statistics of churning:</h2>
+<div id="033eb0d6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>n_churned <span class="op">=</span> pl.col(<span class="st">"churn"</span>).<span class="bu">sum</span>()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>n_total <span class="op">=</span> pl.col(<span class="st">"churn"</span>).count()</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>perc_churn <span class="op">=</span> n_churned <span class="op">/</span> n_total <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>perc_retention <span class="op">=</span> <span class="dv">100</span> <span class="op">-</span> perc_churn</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> client_df.select(</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    n_churned.alias(<span class="st">"n_churned"</span>),</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    n_total.alias(<span class="st">"n_total"</span>),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    perc_churn.<span class="bu">round</span>(decimals<span class="op">=</span><span class="dv">1</span>).alias(<span class="st">"Churn"</span>),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    perc_retention.<span class="bu">round</span>(decimals<span class="op">=</span><span class="dv">1</span>).alias(<span class="st">"Retention"</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    ).with_columns(</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        pl.lit(<span class="st">"Companies"</span>).alias(<span class="st">"Companies"</span>)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">3</span>))</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>df_stacked_bar_plot(df<span class="op">=</span>df, x<span class="op">=</span><span class="st">"Companies"</span>, y<span class="op">=</span>[<span class="st">"Retention"</span>, <span class="st">"Churn"</span>], title<span class="op">=</span><span class="st">"Churning Status"</span>, ylabel<span class="op">=</span><span class="st">"Company base (%)"</span>, ax<span class="op">=</span>ax)</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>annotate_stacked_bars(ax, pad<span class="op">=</span><span class="fl">0.99</span>, colour<span class="op">=</span><span class="st">"white"</span>, textsize<span class="op">=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>shape: (1, 5)
+┌───────────┬─────────┬───────┬───────────┬───────────┐
+│ n_churned ┆ n_total ┆ Churn ┆ Retention ┆ Companies │
+│ ---       ┆ ---     ┆ ---   ┆ ---       ┆ ---       │
+│ i64       ┆ u32     ┆ f64   ┆ f64       ┆ str       │
+╞═══════════╪═════════╪═══════╪═══════════╪═══════════╡
+│ 1419      ┆ 14606   ┆ 9.7   ┆ 90.3      ┆ Companies │
+└───────────┴─────────┴───────┴───────────┴───────────┘</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-20-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="histogram" class="level2">
+<h2 class="anchored" data-anchor-id="histogram">Histogram</h2>
+<p>A histogram is a graphical representation that shows the distribution of a numerical variable. It divides the range of the variable into intervals (called bins) and displays the number of observations (frequency) that fall into each bin as bars</p>
+<div id="9bf88130" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.ticker <span class="im">import</span> MaxNLocator</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> df_histogram(df, column: <span class="bu">str</span>, hue:Optional[<span class="bu">str</span>]<span class="op">=</span><span class="va">None</span>  ,title: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span>, </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                 nbins:<span class="bu">int</span><span class="op">=</span><span class="dv">20</span>, </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                 xlabel: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span>, ylabel: <span class="bu">str</span> <span class="op">=</span> <span class="st">"Frequency"</span>, </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>                 ax: Optional[Axes] <span class="op">=</span> <span class="va">None</span>, n_xticks:<span class="bu">int</span><span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Histogram plot from a DataFrame column.</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">    -----------------------------------------</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">    df: DataFrame containing the data to plot</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">    column: Column name for the histogram</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">    title: Title of the plot</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">    nbins: Number of bins for the histogram</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">    xlabel: Label for the x-axis</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">    ylabel: Label for the y-axis</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co">    ax: Matplotlib axes object to draw on. If None, a new figure and axes are created.</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co">    n_xticks: Number of x-ticks to display on the x-axis</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If ax is provided, use it; otherwise, create a new figure       </span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>    new_fig <span class="op">=</span> (ax <span class="kw">is</span> <span class="va">None</span>)</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> new_fig:</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>        fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>)) <span class="co"># figsize es relevante aquí</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>    plt.sca(ax)</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot histogram</span></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> df[column].dtype <span class="op">==</span> pl.Date:</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Convert date to numpy.datetime64 for plotting</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>        serie <span class="op">=</span> df.select(pl.col(column)).to_numpy().astype(<span class="st">'datetime64[D]'</span>).flatten()</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>        hue <span class="op">=</span> df[hue] <span class="cf">if</span> hue <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>        sns.histplot(x <span class="op">=</span> serie,</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>                     hue<span class="op">=</span>hue,</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>                     multiple<span class="op">=</span><span class="st">"stack"</span>,</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>                     bins<span class="op">=</span>nbins,</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>                     kde<span class="op">=</span><span class="va">False</span>, </span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>                     ax<span class="op">=</span>ax)</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>        sns.histplot(data<span class="op">=</span>df,</span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>                     x<span class="op">=</span>column,</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>                     hue<span class="op">=</span>hue,</span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>                     multiple<span class="op">=</span><span class="st">"stack"</span>,</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>                     bins<span class="op">=</span>nbins,</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>                     kde<span class="op">=</span><span class="va">False</span>, </span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>                     ax<span class="op">=</span>ax)</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>    ax.xaxis.set_major_locator(MaxNLocator(nbins<span class="op">=</span>n_xticks))</span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set labels and title</span></span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>    plt.title(title)</span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(xlabel)</span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(ylabel)</span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Only if it has created a new figure</span></span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> new_fig:</span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>        plt.show()</span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a>fig, ((ax0, ax1), (ax2, ax3)) <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage of df_histogram with date column</span></span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a>df_histogram(client_df[<span class="dv">0</span>:<span class="dv">110</span>], column<span class="op">=</span><span class="st">"date_end"</span>, title<span class="op">=</span><span class="st">"End of Contract Dates"</span>, xlabel<span class="op">=</span><span class="st">"End Date"</span>, ylabel<span class="op">=</span><span class="st">"Frequency"</span>, ax<span class="op">=</span>ax0)</span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage of df_histogram with hue</span></span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a>df_histogram(client_df[<span class="dv">0</span>:<span class="dv">110</span>], column<span class="op">=</span><span class="st">"date_end"</span>, hue<span class="op">=</span><span class="st">"churn"</span> ,title<span class="op">=</span><span class="st">"End of Contract Dates"</span>, xlabel<span class="op">=</span><span class="st">"End Date"</span>, ylabel<span class="op">=</span><span class="st">"Frequency"</span>, ax<span class="op">=</span>ax1)</span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage of df_histogram with hue and reducing xticks</span></span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a>df_histogram(client_df[<span class="dv">0</span>:<span class="dv">110</span>], column<span class="op">=</span><span class="st">"date_end"</span>, hue<span class="op">=</span><span class="st">"churn"</span> ,title<span class="op">=</span><span class="st">"End of Contract Dates"</span>, xlabel<span class="op">=</span><span class="st">"End Date"</span>, ylabel<span class="op">=</span><span class="st">"Frequency"</span>, ax<span class="op">=</span>ax2,</span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a>             n_xticks<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage of df_histogram with numerical series</span></span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a>df_histogram(client_df, column<span class="op">=</span><span class="st">"cons_12m"</span>, title<span class="op">=</span><span class="st">"Last 12 months consumption"</span>, xlabel<span class="op">=</span><span class="st">"Consumption"</span>, ylabel<span class="op">=</span><span class="st">"Frequency"</span>,</span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a>             nbins<span class="op">=</span><span class="dv">8</span>, n_xticks<span class="op">=</span><span class="dv">5</span>, hue<span class="op">=</span><span class="st">"churn"</span>, ax<span class="op">=</span>ax3)</span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Helps with overlapping x-axis labels</span></span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a>fig.autofmt_xdate()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-21-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="time-series" class="level2">
+<h2 class="anchored" data-anchor-id="time-series">Time series</h2>
+<div id="df038c87" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>date_price <span class="op">=</span> pl.col(<span class="st">"price_date"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>years_price <span class="op">=</span> date_price.dt.year().alias(<span class="st">"year"</span>) <span class="co"># extract year</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>months_price <span class="op">=</span> date_price.dt.strftime(<span class="st">"%b"</span>).alias(<span class="st">"month"</span>) <span class="co"># extract month</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>i_months_price <span class="op">=</span> date_price.dt.month().alias(<span class="st">"imonth"</span>) <span class="co"># extract month</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> price_df.select([years_price, months_price, i_months_price]).sort(<span class="st">"imonth"</span>) </span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>shape: (193_002, 3)
+┌──────┬───────┬────────┐
+│ year ┆ month ┆ imonth │
+│ ---  ┆ ---   ┆ ---    │
+│ i32  ┆ str   ┆ i8     │
+╞══════╪═══════╪════════╡
+│ 2015 ┆ Jan   ┆ 1      │
+│ 2015 ┆ Jan   ┆ 1      │
+│ 2015 ┆ Jan   ┆ 1      │
+│ 2015 ┆ Jan   ┆ 1      │
+│ 2015 ┆ Jan   ┆ 1      │
+│ …    ┆ …     ┆ …      │
+│ 2015 ┆ Dec   ┆ 12     │
+│ 2015 ┆ Dec   ┆ 12     │
+│ 2015 ┆ Dec   ┆ 12     │
+│ 2015 ┆ Dec   ┆ 12     │
+│ 2015 ┆ Dec   ┆ 12     │
+└──────┴───────┴────────┘</code></pre>
+</div>
+</div>
+<div id="92c1757f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_historical_prices(df, x_column:<span class="bu">str</span><span class="op">=</span><span class="st">"price_date"</span>):</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">isinstance</span>(df, pl.DataFrame)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Changes from wide format to long format. </span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    df_long <span class="op">=</span> df.unpivot(</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span>x_column,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        variable_name<span class="op">=</span><span class="st">"prices"</span>,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        value_name<span class="op">=</span><span class="st">"price_value"</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    sns.relplot(data<span class="op">=</span>df_long, </span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>                    x<span class="op">=</span>x_column, </span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>                    y<span class="op">=</span><span class="st">"price_value"</span>,</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>                    hue<span class="op">=</span><span class="st">"prices"</span>, </span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>                    kind<span class="op">=</span><span class="st">"line"</span>, </span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>                    aspect<span class="op">=</span><span class="dv">2</span>, </span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>                    marker<span class="op">=</span><span class="st">"o"</span>,</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>                    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="1e4b9709" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.dates <span class="im">import</span> MonthLocator, DateFormatter</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>df_var <span class="op">=</span> price_df[<span class="dv">0</span>:<span class="dv">1000</span>].select(pl.col(</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price_date"</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price_off_peak_var"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price_mid_peak_var"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price_peak_var"</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>df_fix <span class="op">=</span> price_df[<span class="dv">0</span>:<span class="dv">1000</span>].select(pl.col(</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price_date"</span>,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price_off_peak_fix"</span>,</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price_mid_peak_fix"</span>,</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price_peak_fix"</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>plot_historical_prices(df<span class="op">=</span>df_var, x_column<span class="op">=</span><span class="st">"price_date"</span>)</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>plot_historical_prices(df<span class="op">=</span>df_fix, x_column<span class="op">=</span><span class="st">"price_date"</span>)</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the current axes</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the major x-axis ticks to show the start of each month</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MonthLocator(interval<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the format to display the full month name</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(DateFormatter(<span class="st">'%b'</span>)) <span class="co"># Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-24-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-24-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="3bc1711c" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>plotting_vars <span class="op">=</span> pl.col(<span class="st">"price_date"</span>, <span class="st">"price_off_peak_var"</span>, <span class="st">"price_mid_peak_var"</span>, <span class="st">"price_peak_var"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>df_var <span class="op">=</span> price_df.join(client_df.select(pl.col([<span class="st">"id"</span>, <span class="st">"churn"</span>])), how<span class="op">=</span><span class="st">"inner"</span>, on<span class="op">=</span><span class="st">"id"</span>).select(plotting_vars, <span class="st">"churn"</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>df_var_churn <span class="op">=</span> df_var.<span class="bu">filter</span>(pl.col(<span class="st">"churn"</span>) <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>df_var_nochurn <span class="op">=</span> df_var.<span class="bu">filter</span>(pl.col(<span class="st">"churn"</span>) <span class="op">==</span> <span class="dv">0</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(price_df.shape)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_var.shape)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_var_churn.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(193002, 8)
+(175149, 5)
+(17003, 5)</code></pre>
+</div>
+</div>
+<div id="badbfac2" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>plot_historical_prices(df<span class="op">=</span>df_var_churn.select(plotting_vars), x_column<span class="op">=</span><span class="st">"price_date"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the current axes</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the major x-axis ticks to show the start of each month</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MonthLocator(interval<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the format to display the full month name</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(DateFormatter(<span class="st">'%b'</span>)) <span class="co"># Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>plot_historical_prices(df<span class="op">=</span>df_var_nochurn.select(plotting_vars), x_column<span class="op">=</span><span class="st">"price_date"</span>)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the current axes</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the major x-axis ticks to show the start of each month</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MonthLocator(interval<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the format to display the full month name</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(DateFormatter(<span class="st">'%b'</span>)) <span class="co"># Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-26-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-26-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="711d357f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>sns.relplot(data<span class="op">=</span>df_var, x<span class="op">=</span><span class="st">"price_date"</span>, y<span class="op">=</span><span class="st">"price_off_peak_var"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, kind<span class="op">=</span><span class="st">"line"</span>, marker<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MonthLocator(interval<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(DateFormatter(<span class="st">'%b'</span>)) <span class="co"># Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>sns.relplot(data<span class="op">=</span>df_var, x<span class="op">=</span><span class="st">"price_date"</span>, y<span class="op">=</span><span class="st">"price_mid_peak_var"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, kind<span class="op">=</span><span class="st">"line"</span>, marker<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MonthLocator(interval<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(DateFormatter(<span class="st">'%b'</span>)) <span class="co"># Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>sns.relplot(data<span class="op">=</span>df_var, x<span class="op">=</span><span class="st">"price_date"</span>, y<span class="op">=</span><span class="st">"price_peak_var"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, kind<span class="op">=</span><span class="st">"line"</span>, marker<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MonthLocator(interval<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(DateFormatter(<span class="st">'%b'</span>)) <span class="co"># Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-27-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-27-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-27-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Clients that churned had higher variable prices peak and mid-peak than those that did not churned along the year.</p>
+<div id="eee00d39" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>var_or_fix <span class="op">=</span> <span class="st">"fix"</span>  <span class="co"># or "fix"</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>plotting_vars <span class="op">=</span> pl.col(<span class="st">"price_date"</span>, <span class="ss">f"price_off_peak_</span><span class="sc">{</span>var_or_fix<span class="sc">}</span><span class="ss">"</span>, <span class="ss">f"price_mid_peak_</span><span class="sc">{</span>var_or_fix<span class="sc">}</span><span class="ss">"</span>, <span class="ss">f"price_peak_</span><span class="sc">{</span>var_or_fix<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>df_fix <span class="op">=</span> price_df.join(client_df.select(pl.col([<span class="st">"id"</span>, <span class="st">"churn"</span>])), how<span class="op">=</span><span class="st">"inner"</span>, on<span class="op">=</span><span class="st">"id"</span>).select(plotting_vars, <span class="st">"churn"</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>df_fix_churn <span class="op">=</span> df_fix.<span class="bu">filter</span>(pl.col(<span class="st">"churn"</span>) <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>df_fix_nochurn <span class="op">=</span> df_fix.<span class="bu">filter</span>(pl.col(<span class="st">"churn"</span>) <span class="op">==</span> <span class="dv">0</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(price_df.shape)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_fix.shape)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_fix_churn.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(193002, 8)
+(175149, 5)
+(17003, 5)</code></pre>
+</div>
+</div>
+<div id="99b36c2c" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>df_fix.columns</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>['price_date',
+ 'price_off_peak_fix',
+ 'price_mid_peak_fix',
+ 'price_peak_fix',
+ 'churn']</code></pre>
+</div>
+</div>
+<div id="4fd2fd2c" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sns.relplot(data<span class="op">=</span>df_fix, x<span class="op">=</span><span class="st">"price_date"</span>, y<span class="op">=</span><span class="ss">f"price_off_peak_</span><span class="sc">{</span>var_or_fix<span class="sc">}</span><span class="ss">"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, kind<span class="op">=</span><span class="st">"scatter"</span>, marker<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MonthLocator(interval<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(DateFormatter(<span class="st">'%b'</span>)) <span class="co"># Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>sns.relplot(data<span class="op">=</span>df_fix, x<span class="op">=</span><span class="st">"price_date"</span>, y<span class="op">=</span><span class="ss">f"price_mid_peak_</span><span class="sc">{</span>var_or_fix<span class="sc">}</span><span class="ss">"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, kind<span class="op">=</span><span class="st">"scatter"</span>, marker<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MonthLocator(interval<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(DateFormatter(<span class="st">'%b'</span>)) <span class="co"># Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>sns.relplot(data<span class="op">=</span>df_fix, x<span class="op">=</span><span class="st">"price_date"</span>, y<span class="op">=</span><span class="ss">f"price_peak_</span><span class="sc">{</span>var_or_fix<span class="sc">}</span><span class="ss">"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, kind<span class="op">=</span><span class="st">"line"</span>, marker<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MonthLocator(interval<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(DateFormatter(<span class="st">'%b'</span>)) <span class="co"># Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-30-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-30-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-30-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For the Fixed prices, those clients that churned had a larger price than those that did not churned.</p>
+<section id="prices-for-the-channels-that-does-not-have-churning" class="level3">
+<h3 class="anchored" data-anchor-id="prices-for-the-channels-that-does-not-have-churning">Prices for the channels that does not have churning</h3>
+<div id="9e02922f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Unique values of the channel sales</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>ch_ids <span class="op">=</span> client_df[<span class="st">"channel_sales"</span>].unique().to_list()</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># display(ch_ids)</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Create mapping</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>mapping <span class="op">=</span> {val: idx <span class="cf">for</span> idx, val <span class="kw">in</span> <span class="bu">enumerate</span>(ch_ids)}</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co"># display(mapping)</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Replace the values. replace will save int as the old type (str), then, use replace_strict</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>client_df <span class="op">=</span> client_df.with_columns(</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"channel_sales"</span>).replace_strict(mapping).alias(<span class="st">"ch_id"</span>)</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="co"># client_df["ch_id"]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="50222e2e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>var_or_fix <span class="op">=</span> <span class="st">"fix"</span>  <span class="co"># or "fix"</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>plotting_vars <span class="op">=</span> pl.col(<span class="st">"price_date"</span>, <span class="ss">f"price_off_peak_</span><span class="sc">{</span>var_or_fix<span class="sc">}</span><span class="ss">"</span>, <span class="ss">f"price_mid_peak_</span><span class="sc">{</span>var_or_fix<span class="sc">}</span><span class="ss">"</span>, <span class="ss">f"price_peak_</span><span class="sc">{</span>var_or_fix<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>df_fix <span class="op">=</span> price_df.join(client_df.select(pl.col([<span class="st">"id"</span>, <span class="st">"churn"</span>, <span class="st">"ch_id"</span>])), </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>                       how<span class="op">=</span><span class="st">"inner"</span>, </span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>                       on<span class="op">=</span><span class="st">"id"</span>).select(plotting_vars, <span class="st">"churn"</span>, <span class="st">"ch_id"</span>, <span class="st">"id"</span>)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>display(price_df.shape)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>display(df_fix.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>(193002, 8)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>(175149, 7)</code></pre>
+</div>
+</div>
+<div id="670083de" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># client_df.filter(~pl.col("id").is_in(price_df["id"].implode()))</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>price_df.<span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">"id"</span>).is_in(client_df[<span class="st">"id"</span>].implode())).head(<span class="dv">2</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>id0 <span class="op">=</span> (price_df.<span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">"id"</span>).is_in(client_df[<span class="st">"id"</span>].implode())).select(pl.col(<span class="st">"id"</span>))[<span class="dv">0</span>,<span class="dv">0</span>])</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(id0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>36b6352b4656216bfdb96f01e9a94b4e</code></pre>
+</div>
+</div>
+<div id="d8cef5a3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>df_fix.<span class="bu">filter</span>(pl.col(<span class="st">"id"</span>)<span class="op">==</span>id0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (0, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">price_date</th>
+<th data-quarto-table-cell-role="th">price_off_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_peak_fix</th>
+<th data-quarto-table-cell-role="th">churn</th>
+<th data-quarto-table-cell-role="th">ch_id</th>
+<th data-quarto-table-cell-role="th">id</th>
+</tr>
+<tr class="even">
+<td>date</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>i64</td>
+<td>i64</td>
+<td>str</td>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="6642fcd9" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>df_fix</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (175_149, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">price_date</th>
+<th data-quarto-table-cell-role="th">price_off_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_mid_peak_fix</th>
+<th data-quarto-table-cell-role="th">price_peak_fix</th>
+<th data-quarto-table-cell-role="th">churn</th>
+<th data-quarto-table-cell-role="th">ch_id</th>
+<th data-quarto-table-cell-role="th">id</th>
+</tr>
+<tr class="even">
+<td>date</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>i64</td>
+<td>i64</td>
+<td>str</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2015-01-01</td>
+<td>44.266931</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0</td>
+<td>4</td>
+<td>"038af19179925da21a25619c5a24b7…</td>
+</tr>
+<tr class="even">
+<td>2015-02-01</td>
+<td>44.266931</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0</td>
+<td>4</td>
+<td>"038af19179925da21a25619c5a24b7…</td>
+</tr>
+<tr class="odd">
+<td>2015-03-01</td>
+<td>44.266931</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0</td>
+<td>4</td>
+<td>"038af19179925da21a25619c5a24b7…</td>
+</tr>
+<tr class="even">
+<td>2015-04-01</td>
+<td>44.266931</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0</td>
+<td>4</td>
+<td>"038af19179925da21a25619c5a24b7…</td>
+</tr>
+<tr class="odd">
+<td>2015-05-01</td>
+<td>44.266931</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0</td>
+<td>4</td>
+<td>"038af19179925da21a25619c5a24b7…</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>2015-08-01</td>
+<td>40.728885</td>
+<td>16.291555</td>
+<td>24.43733</td>
+<td>0</td>
+<td>4</td>
+<td>"16f51cdc2baa19af0b940ee1b3dd17…</td>
+</tr>
+<tr class="even">
+<td>2015-09-01</td>
+<td>40.728885</td>
+<td>16.291555</td>
+<td>24.43733</td>
+<td>0</td>
+<td>4</td>
+<td>"16f51cdc2baa19af0b940ee1b3dd17…</td>
+</tr>
+<tr class="odd">
+<td>2015-10-01</td>
+<td>40.728885</td>
+<td>16.291555</td>
+<td>24.43733</td>
+<td>0</td>
+<td>4</td>
+<td>"16f51cdc2baa19af0b940ee1b3dd17…</td>
+</tr>
+<tr class="even">
+<td>2015-11-01</td>
+<td>40.728885</td>
+<td>16.291555</td>
+<td>24.43733</td>
+<td>0</td>
+<td>4</td>
+<td>"16f51cdc2baa19af0b940ee1b3dd17…</td>
+</tr>
+<tr class="odd">
+<td>2015-12-01</td>
+<td>40.728885</td>
+<td>16.291555</td>
+<td>24.43733</td>
+<td>0</td>
+<td>4</td>
+<td>"16f51cdc2baa19af0b940ee1b3dd17…</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="05e6d9b1" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sns.relplot(data=df_fix, x="price_date", y="price_peak_fix", hue="ch_id", kind="line", marker="o",</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co">#             palette="hsv")</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ax = plt.gca()</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ax.xaxis.set_major_locator(MonthLocator(interval=1))</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ax.xaxis.set_major_formatter(DateFormatter('%b')) # Use '%b' for abbreviated names (e.g., Jan, Feb)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="8a37f3d0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> client_df.select(</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"ch_id"</span>),</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"churn"</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>).group_by(<span class="st">"ch_id"</span>).agg(pl.col(<span class="st">"churn"</span>).<span class="bu">sum</span>()<span class="op">&gt;</span><span class="dv">1</span>).sort(<span class="st">"ch_id"</span>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>display(a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (8, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">ch_id</th>
+<th data-quarto-table-cell-role="th">churn</th>
+</tr>
+<tr class="even">
+<td>i64</td>
+<td>bool</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>true</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>true</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>true</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>false</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>true</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>true</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>false</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="ac6ecd7e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>pc <span class="op">=</span> client_df.join(price_df.select(pl.col([<span class="st">"id"</span>])), </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                       how<span class="op">=</span><span class="st">"inner"</span>, </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                       on<span class="op">=</span><span class="st">"id"</span>).select(<span class="st">"id"</span>)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>display(client_df.shape)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>display(price_df.shape)</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>display(pc[<span class="st">"id"</span>].n_unique())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>(14606, 27)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>(193002, 8)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>14606</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="extra-analysis-on-prices" class="level2">
+<h2 class="anchored" data-anchor-id="extra-analysis-on-prices">Extra analysis on prices:</h2>
+<p>Let’s see from the price dataset, how many have a 0 price, and maybe make a difference between those that probably beacause of a special offer they have a price of 0</p>
+<div id="4f969a69" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>df_prices <span class="op">=</span> price_df.join(client_df.select(pl.col([<span class="st">"id"</span>, <span class="st">"churn"</span>])), how<span class="op">=</span><span class="st">"inner"</span>, on<span class="op">=</span><span class="st">"id"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Calculate the averages for each ID, (avg price per year)</p>
+<div id="36887aad" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>df_avg <span class="op">=</span> df_prices.group_by(<span class="st">"id"</span>, maintain_order<span class="op">=</span><span class="va">True</span>).agg(</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">all</span>().mean().name.prefix(<span class="st">"avg_"</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>        ).select(</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">#     pl.exclude("avg_price_date")</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">"id"</span>),</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">"avg_churn"</span>).alias(<span class="st">"churn"</span>),</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>            avg_var_price <span class="op">=</span> pl.col(<span class="st">"avg_price_off_peak_var"</span>) <span class="op">+</span> pl.col(<span class="st">"avg_price_peak_var"</span>) <span class="op">+</span> pl.col(<span class="st">"avg_price_mid_peak_var"</span>),</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>            avg_fix_price <span class="op">=</span> pl.col(<span class="st">"avg_price_off_peak_fix"</span>) <span class="op">+</span> pl.col(<span class="st">"avg_price_peak_fix"</span>) <span class="op">+</span> pl.col(<span class="st">"avg_price_mid_peak_fix"</span>),</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>            avg_var_peak <span class="op">=</span> pl.col(<span class="st">"avg_price_peak_var"</span>),</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>            avg_var_mid <span class="op">=</span> pl.col(<span class="st">"avg_price_mid_peak_var"</span>),</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>            avg_var_off <span class="op">=</span> pl.col(<span class="st">"avg_price_off_peak_var"</span>),</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>            avg_fix_peak <span class="op">=</span> pl.col(<span class="st">"avg_price_peak_fix"</span>),</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>            avg_fix_mid <span class="op">=</span> pl.col(<span class="st">"avg_price_mid_peak_fix"</span>),</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>            avg_fix_off <span class="op">=</span> pl.col(<span class="st">"avg_price_off_peak_fix"</span>),</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>display(df_avg.head(<span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 10)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">churn</th>
+<th data-quarto-table-cell-role="th">avg_var_price</th>
+<th data-quarto-table-cell-role="th">avg_fix_price</th>
+<th data-quarto-table-cell-role="th">avg_var_peak</th>
+<th data-quarto-table-cell-role="th">avg_var_mid</th>
+<th data-quarto-table-cell-role="th">avg_var_off</th>
+<th data-quarto-table-cell-role="th">avg_fix_peak</th>
+<th data-quarto-table-cell-role="th">avg_fix_mid</th>
+<th data-quarto-table-cell-role="th">avg_fix_off</th>
+</tr>
+<tr class="even">
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"038af19179925da21a25619c5a24b7…</td>
+<td>0.0</td>
+<td>0.14855</td>
+<td>44.35582</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.14855</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>44.35582</td>
+</tr>
+<tr class="even">
+<td>"31f2ce549924679a3cbb2d128ae9ea…</td>
+<td>0.0</td>
+<td>0.299189</td>
+<td>81.322007</td>
+<td>0.102637</td>
+<td>0.073525</td>
+<td>0.123027</td>
+<td>24.396601</td>
+<td>16.264402</td>
+<td>40.661003</td>
+</tr>
+<tr class="odd">
+<td>"48f3e6e86f7a8656b2c6b6ce276305…</td>
+<td>0.0</td>
+<td>0.145552</td>
+<td>44.400265</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.145552</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>44.400265</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Clients whose average variable price is 0</p>
+<div id="d9b2c284" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>df_avg.<span class="bu">filter</span>(</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"avg_var_price"</span>)<span class="op">==</span><span class="fl">0.0</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    ).select(</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"id"</span>).count().alias(<span class="st">"total_clients"</span>),</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"churn"</span>).<span class="bu">sum</span>().alias(<span class="st">"n_churn_clients"</span>),</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_price"</span>).mean(),</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_fix_price"</span>).mean(),</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_peak"</span>).mean(),</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_mid"</span>).mean(),</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_off"</span>).mean(),</span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">total_clients</th>
+<th data-quarto-table-cell-role="th">n_churn_clients</th>
+<th data-quarto-table-cell-role="th">avg_var_price</th>
+<th data-quarto-table-cell-role="th">avg_fix_price</th>
+<th data-quarto-table-cell-role="th">avg_var_peak</th>
+<th data-quarto-table-cell-role="th">avg_var_mid</th>
+<th data-quarto-table-cell-role="th">avg_var_off</th>
+</tr>
+<tr class="even">
+<td>u32</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>20</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Clients whose average fix price is 0</p>
+<div id="c2bbb510" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>df_avg.<span class="bu">filter</span>(</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"avg_fix_price"</span>)<span class="op">==</span><span class="fl">0.0</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    ).select(</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"id"</span>).count().alias(<span class="st">"total_clients"</span>),</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"churn"</span>).<span class="bu">sum</span>().alias(<span class="st">"n_churn_clients"</span>),</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_price"</span>).mean(),</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_fix_price"</span>).mean(),</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_peak"</span>).mean(),</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_mid"</span>).mean(),</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_off"</span>).mean(),</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_fix_peak"</span>).mean(),</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_fix_mid"</span>).mean(),</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_fix_off"</span>).mean(),</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 10)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">total_clients</th>
+<th data-quarto-table-cell-role="th">n_churn_clients</th>
+<th data-quarto-table-cell-role="th">avg_var_price</th>
+<th data-quarto-table-cell-role="th">avg_fix_price</th>
+<th data-quarto-table-cell-role="th">avg_var_peak</th>
+<th data-quarto-table-cell-role="th">avg_var_mid</th>
+<th data-quarto-table-cell-role="th">avg_var_off</th>
+<th data-quarto-table-cell-role="th">avg_fix_peak</th>
+<th data-quarto-table-cell-role="th">avg_fix_mid</th>
+<th data-quarto-table-cell-role="th">avg_fix_off</th>
+</tr>
+<tr class="even">
+<td>u32</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>105</td>
+<td>0.0</td>
+<td>0.002811</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.002811</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Let’s plot the prices once the average prices equal to 0 have been filtered</p>
+<div id="84dfef2a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>df_filtered <span class="op">=</span> df_avg.<span class="bu">filter</span>(</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (pl.col("avg_var_price")&gt;0.0) &amp; (pl.col("avg_fix_price")&gt;0.0) </span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    (pl.col(<span class="st">"avg_var_peak"</span>)<span class="op">&gt;</span><span class="fl">0.0</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"avg_var_mid"</span>)<span class="op">&gt;</span><span class="fl">0.0</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"avg_var_off"</span>)<span class="op">&gt;</span><span class="fl">0.0</span>) </span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    ).select(</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_price"</span>),</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_fix_price"</span>),</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"churn"</span>),</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_peak"</span>),</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_mid"</span>),</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_var_off"</span>),</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_fix_peak"</span>),</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_fix_mid"</span>),</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"avg_fix_off"</span>),</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="dv">1</span>        </span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>display(df_filtered)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5_659, 10)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">avg_var_price</th>
+<th data-quarto-table-cell-role="th">avg_fix_price</th>
+<th data-quarto-table-cell-role="th">churn</th>
+<th data-quarto-table-cell-role="th">avg_var_peak</th>
+<th data-quarto-table-cell-role="th">avg_var_mid</th>
+<th data-quarto-table-cell-role="th">avg_var_off</th>
+<th data-quarto-table-cell-role="th">avg_fix_peak</th>
+<th data-quarto-table-cell-role="th">avg_fix_mid</th>
+<th data-quarto-table-cell-role="th">avg_fix_off</th>
+<th data-quarto-table-cell-role="th">x</th>
+</tr>
+<tr class="even">
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>i32</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.299189</td>
+<td>81.322007</td>
+<td>0.0</td>
+<td>0.102637</td>
+<td>0.073525</td>
+<td>0.123027</td>
+<td>24.396601</td>
+<td>16.264402</td>
+<td>40.661003</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>0.298645</td>
+<td>81.294854</td>
+<td>1.0</td>
+<td>0.10248</td>
+<td>0.07322</td>
+<td>0.122945</td>
+<td>24.388455</td>
+<td>16.258971</td>
+<td>40.647427</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>0.3032895</td>
+<td>81.294854</td>
+<td>0.0</td>
+<td>0.104028</td>
+<td>0.074768</td>
+<td>0.124493</td>
+<td>24.388455</td>
+<td>16.258971</td>
+<td>40.647427</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>0.302519</td>
+<td>81.322007</td>
+<td>0.0</td>
+<td>0.103748</td>
+<td>0.074635</td>
+<td>0.124137</td>
+<td>24.396601</td>
+<td>16.264402</td>
+<td>40.661003</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>0.3031655</td>
+<td>81.45777</td>
+<td>1.0</td>
+<td>0.103993</td>
+<td>0.074669</td>
+<td>0.124503</td>
+<td>24.43733</td>
+<td>16.291555</td>
+<td>40.728885</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>0.301292</td>
+<td>81.403465</td>
+<td>0.0</td>
+<td>0.103794</td>
+<td>0.07316</td>
+<td>0.124338</td>
+<td>24.421038</td>
+<td>16.280694</td>
+<td>40.701732</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>0.292682</td>
+<td>78.249923</td>
+<td>0.0</td>
+<td>0.100903</td>
+<td>0.067322</td>
+<td>0.124457</td>
+<td>22.368303</td>
+<td>14.912203</td>
+<td>40.969417</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>0.289196</td>
+<td>81.376312</td>
+<td>0.0</td>
+<td>0.099811</td>
+<td>0.069038</td>
+<td>0.120347</td>
+<td>24.412893</td>
+<td>16.275263</td>
+<td>40.688156</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>0.302693</td>
+<td>81.45777</td>
+<td>0.0</td>
+<td>0.10424</td>
+<td>0.073947</td>
+<td>0.124506</td>
+<td>24.43733</td>
+<td>16.291555</td>
+<td>40.728885</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>0.30589</td>
+<td>81.294854</td>
+<td>0.0</td>
+<td>0.104895</td>
+<td>0.075635</td>
+<td>0.12536</td>
+<td>24.388455</td>
+<td>16.258971</td>
+<td>40.647428</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="03855c56" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">3</span>,<span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>sns.boxplot(df_filtered, x<span class="op">=</span><span class="st">"avg_var_peak"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>])</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>sns.boxplot(df_filtered, x<span class="op">=</span><span class="st">"avg_var_mid"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>])</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>sns.boxplot(df_filtered, x<span class="op">=</span><span class="st">"avg_var_off"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, ax<span class="op">=</span>axs[<span class="dv">2</span>])</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-44-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="dee4ac88" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">3</span>,<span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>sns.boxplot(df_filtered, x<span class="op">=</span><span class="st">"avg_fix_peak"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>])</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>sns.boxplot(df_filtered, x<span class="op">=</span><span class="st">"avg_fix_mid"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>])</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>sns.boxplot(df_filtered, x<span class="op">=</span><span class="st">"avg_fix_off"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, ax<span class="op">=</span>axs[<span class="dv">2</span>])</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-45-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="fa6e48a9" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>sns.relplot(x<span class="op">=</span>pl.concat([df_filtered[<span class="st">"x"</span>], <span class="dv">1</span><span class="op">+</span>df_filtered[<span class="st">"x"</span>]]), </span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>            y<span class="op">=</span>pl.concat([df_filtered[<span class="st">"avg_var_price"</span>], df_filtered[<span class="st">"avg_var_price"</span>]]), </span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>            hue<span class="op">=</span>pl.concat([df_filtered[<span class="st">"churn"</span>], df_filtered[<span class="st">"churn"</span>]]),</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>            kind<span class="op">=</span><span class="st">"line"</span>)</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-46-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="31076868" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>pl.concat([df_filtered[<span class="st">"x"</span>], df_filtered[<span class="st">"x"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (11_318,)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">x</th>
+</tr>
+<tr class="even">
+<td>i32</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+</tr>
+<tr class="even">
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="b5c89202" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>df_histogram(df<span class="op">=</span>df_filtered, column<span class="op">=</span><span class="st">"avg_var_price"</span>, hue<span class="op">=</span><span class="st">"churn"</span>, nbins<span class="op">=</span><span class="dv">50</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Task2_Data_exploration_files/figure-html/cell-48-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/Ramon-PR\.github\.io\/BCG-DataScience-The-Forage");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Ramon-PR/BCG-DataScience-The-Forage/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
